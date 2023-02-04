@@ -44,13 +44,13 @@
             "name": "xcode-arm-none-eabi-gcc-debug",
             "displayName": "xcode-arm-none-eabi-gcc Debug",
             "inherits": "arm-none-eabi-gcc-debug",
-            "generator": "Xcode",
+            "generator": "Xcode"
         },
         {
             "name": "xcode-arm-none-eabi-gcc-release",
             "displayName": "xcode-arm-none-eabi-gcc Release",
             "inherits": "arm-none-eabi-gcc-release",
-            "generator": "Xcode",
+            "generator": "Xcode"
         }
     ],
     "buildPresets": [

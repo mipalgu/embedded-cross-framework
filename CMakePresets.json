@@ -1,0 +1,74 @@
+{
+    "version": 2,
+    "configurePresets": [
+        {
+            "name": "arm-none-eabi-gcc-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/.build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/.build/install/${presetName}",
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "cmake/toolchain-arm-none-eabi-gcc.cmake"
+                }
+            },
+            "architecture": {
+                "value": "unspecified",
+                "strategy": "external"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "intelliSenseMode": "linux-gcc-arm"
+                }
+            }
+        },
+        {
+            "name": "arm-none-eabi-gcc-debug",
+            "displayName": "arm-none-eabi-gcc Debug",
+            "inherits": "arm-none-eabi-gcc-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "arm-none-eabi-gcc-release",
+            "displayName": "arm-none-eabi-gcc Release",
+            "inherits": "arm-none-eabi-gcc-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "xcode-arm-none-eabi-gcc-debug",
+            "displayName": "xcode-arm-none-eabi-gcc Debug",
+            "inherits": "arm-none-eabi-gcc-debug",
+            "generator": "Xcode",
+        },
+        {
+            "name": "xcode-arm-none-eabi-gcc-release",
+            "displayName": "xcode-arm-none-eabi-gcc Release",
+            "inherits": "arm-none-eabi-gcc-release",
+            "generator": "Xcode",
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "arm-none-eabi-gcc-debug",
+            "configurePreset": "arm-none-eabi-gcc-debug"
+        },
+        {
+            "name": "arm-none-eabi-gcc-release",
+            "configurePreset": "arm-none-eabi-gcc-release"
+        },
+        {
+            "name": "xcode-arm-none-eabi-gcc-debug",
+            "configurePreset": "xcode-arm-none-eabi-gcc-debug"
+        },
+        {
+            "name": "xcode-arm-none-eabi-gcc-release",
+            "configurePreset": "xcode-arm-none-eabi-gcc-release"
+        }
+    ]
+}

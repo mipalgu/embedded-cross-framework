@@ -10,7 +10,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Set the project name
 project(EmbeddedProject C CXX ASM)
-set(EXECUTABLE_NAME ${PROJECT_NAME}.elf)
 
 # Require the C standard to be C17,
 # but allow extensions.
@@ -39,43 +38,18 @@ set(CMAKE_EXECUTABLE_SUFFIX)
 include(cmake/layout.cmake)
 include(cmake/flags.cmake)
 include(cmake/config.cmake)
+include(cmake/modules.cmake)
+include(cmake/macros.cmake)
 
 # Show toolchain used.
 message(STATUS "Using toolchain ${CMAKE_TOOLCHAIN_FILE}")
 
-# Sources to compile
-set(EmbeddedProject_SOURCES
-  ${BOOT_SOURCES}
-  ${OS_SOURCES}
-  ${DRIVERS_SOURCES}
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
-)
+# Find and check boards.
+find_boards(ALL_BOARDS)
+check_boards(ALL_BOARDS)
 
-add_executable(${EXECUTABLE_NAME} ${EmbeddedProject_SOURCES})
-target_include_directories(${EXECUTABLE_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${OS_INCLUDES}
-    ${DRIVERS_INCLUDES}
-)
+# Find projects.
+find_projects(ALL_PROJECTS)
 
-# include modules
-include(cmake/modules.cmake)
-
-# Link libraries
-target_link_libraries(${EXECUTABLE_NAME} PRIVATE
-    ${TOOLCHAIN_LIBS}
-    ${OS_LIBS}
-    ${DRIVER_LIBS}
-)
-
-# Create hex, bin, and s-records
-add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${EXECUTABLE_NAME}> ${EXECUTABLE_NAME}.hex
-    COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${EXECUTABLE_NAME}> ${EXECUTABLE_NAME}.bin
-    COMMAND ${CMAKE_OBJCOPY} -Osrec --srec-len=64 $<TARGET_FILE:${EXECUTABLE_NAME}> ${EXECUTABLE_NAME}.s19
-)
-
-# Print the binary size
-add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
-    COMMAND ${CMAKE_SIZE} ${EXECUTABLE_NAME}
-)
+# Build all projects for the given boards.
+build_projects_for_boards("${PROJECTS}" "${BOARDS}" "${ALL_PROJECTS}")

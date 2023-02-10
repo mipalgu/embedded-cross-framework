@@ -1,5 +1,5 @@
 {
-    "version": 2,
+    "version": 3,
     "configurePresets": [
         {
             "name": "arm-none-eabi-gcc-base",
@@ -11,7 +11,7 @@
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/.build/install/${presetName}",
                 "CMAKE_TOOLCHAIN_FILE": {
                     "type": "FILEPATH",
-                    "value": "cmake/toolchain-arm-none-eabi-gcc.cmake"
+                    "value": "toolchains/arm-none-eabi-gcc/toolchain.cmake"
                 }
             },
             "architecture": {

@@ -44,9 +44,12 @@ include(cmake/macros.cmake)
 # Show toolchain used.
 message(STATUS "Using toolchain ${CMAKE_TOOLCHAIN_FILE}")
 
+# Find checked-out firmware libraries.
+find_firmware(ALL_FIRMWARE)
+
 # Find and check boards.
 find_boards(ALL_BOARDS)
-check_boards(ALL_BOARDS)
+check_boards(${ALL_BOARDS})
 
 # Find projects.
 find_projects(ALL_PROJECTS)

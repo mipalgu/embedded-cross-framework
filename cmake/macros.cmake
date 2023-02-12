@@ -1,15 +1,17 @@
 # Find all directories grouped by their parent directory
 macro(find_grouped_directories group_basedir dir_basename_list)
     file(GLOB top_level RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${group_basedir} ${CMAKE_CURRENT_SOURCE_DIR}/${group_basedir}/*)
-    foreach(top_level_entry ${top_level})
-        file(GLOB sub_dirs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${group_basedir} ${CMAKE_CURRENT_SOURCE_DIR}/${group_basedir}/${top_level_entry}/*)
+    foreach(top_level_category ${top_level})
+        file(GLOB sub_dirs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${group_basedir}/${top_level_category} ${CMAKE_CURRENT_SOURCE_DIR}/${group_basedir}/${top_level_category}/*)
         foreach(sub_dir ${sub_dirs})
-            if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${group_basedir}/${top_level_entry}/${sub_dir})
+            if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${group_basedir}/${top_level_category}/${sub_dir})
+                set(${group_basedir}_${sub_dir}_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${group_basedir}/${top_level_category}/${sub_dir})
+                set(${group_basedir}_${sub_dir}_CATEGORY ${top_level_category})
                 list(APPEND ${dir_basename_list} ${sub_dir})
             endif()
         endforeach()
     endforeach()
-    list(REMOVE_DUPLICATES ${group_basedir})
+    list(REMOVE_DUPLICATES ${dir_basename_list})
 endmacro()
 
 # Find all projects
@@ -22,10 +24,15 @@ macro(find_boards board_list)
     find_grouped_directories(boards ${board_list})
 endmacro()
 
+# Find firmware
+macro(find_firmware firmware_list)
+    find_grouped_directories(firmware ${firmware_list})
+endmacro()
+
 # Check or set the BOARD variable against/to supported boards
 macro(check_boards valid_boards)
-    if(NOT BOARDS)
-        set(BOARDS ${valid_boards} CACHE STRING "Boards to build for")
+    if(NOT BOARDS OR BOARDS STREQUAL "ALL_BOARDS")
+        set(BOARDS ${valid_boards})
     else()
         if (NOT BOARDS MATCHES ${valid_boards})
             message(FATAL_ERROR "Board(s) ${BOARDS} not supported by ${PROJECT}")
@@ -36,41 +43,53 @@ endmacro()
 # Build the given projects for the given boards.
 macro(build_projects_for_boards projects boards valid_projects)
     foreach(project ${projects})
-        cmake_path(GET ${project} FILENAME project_name)
+        cmake_path(GET project FILENAME project_name)
         if(IS_ABSOLUTE ${project})
+            set(${project_name}_DIR ${project})
             include(${project}/project.cmake)
         elseif(project MATCHES ${valid_projects})
-            include(${CMAKE_CURRENT_SOURCE_DIR}/${project}/project.cmake)
+            set(${project_name}_DIR ${projects_${project_name}_DIR})
+            set(${project_name}_CATEGORY ${projects_${project_name}_CATEGORY})
+            include(${${project_name}_DIR}/project.cmake)
         else()
             message(FATAL_ERROR "Project ${project} not in supported projects: ${valid_projects}")
         endif()
+        set(${project_name}_VERSION
+            ${${project_name}_VERSION_MAJOR}.${${project_name}_VERSION_MINOR}.${${project_name}_VERSION_PATCH})
+        set(${project_name}_VERSION_STRING
+            "${${project_name}_VERSION_MAJOR}.${${project_name}_VERSION_MINOR}.${${project_name}_VERSION_PATCH}")
         foreach(board ${boards})
+            cmake_path(GET board FILENAME board_name)
+            message(STATUS "Building project ${project_name} for board ${board_name}")
             if(IS_ABSOLUTE ${board})
-               include(${board}/board.cmake)
-            elseif(exists ${CMAKE_CURRENT_SOURCE_DIR}/boards/${board}/board.cmake)
-                include(${CMAKE_CURRENT_SOURCE_DIR}/boards/${board}/board.cmake)
+                set(${board_name}_DIR ${board})
+                include(${board}/board.cmake)
+            # else check if board.cmake file exists in the board directory
+            elseif(EXISTS ${boards_${board}_DIR}/board.cmake)
+                set(${board_name}_DIR ${boards_${board}_DIR})
+                include(${boards_${board}_DIR}/board.cmake)
             else()
                 message(FATAL_ERROR "Board ${board} not found.")
             endif()
             if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boards/${board}/include)
-                list(APPEND ${board}_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/boards/${board}/include)
+                list(APPEND ${board}_INCDIR ${CMAKE_CURRENT_SOURCE_DIR}/boards/${board}/include)
             endif()
             if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boards/${board}/libs)
                 list(APPEND ${board}_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/boards/${board}/libs)
             endif()
         endforeach()
-        build_project_for_boards(${project} ${boards} "${${project}_SOURCES}" "${${project}_LIBRARIES}")
+        build_project_for_boards(${project} ${boards})
     endforeach()
 endmacro()
 
 # Build the project for the given boards
-macro(build_project_for_boards project boards sources libraries)
+macro(build_project_for_boards project boards)
     foreach(board ${boards})
-        cmake_path(GET ${board} FILENAME board_name)
+        cmake_path(GET board FILENAME board_name)
         set(subproject ${project}_${board_name})
         set(executable ${subproject}.elf)
-        if(list(length ${project}_BOARDS) EQUAL 0 OR ${board} IN_LIST ${project}_BOARDS)
-            build_subproject_for_board(${project} ${board} ${subproject} ${executable} "${${subproject}_SOURCES} ${sources}" "${${subproject}_LIBRARIES} ${libraries}")
+        if (${board} IN_LIST ${project}_BOARDS OR NOT ${project}_BOARDS)
+            build_subproject_for_board(${project} ${board} ${subproject} ${executable})
         else()
             message(STATUS "Project ${project} does not support board ${board} (supported boards: ${${project}_BOARDS})")
         endif()
@@ -78,15 +97,15 @@ macro(build_project_for_boards project boards sources libraries)
 endmacro()
 
 # Build the subproject for the given board
-macro(build_subproject_for_board project board subproject executable sources libraries)
-    add_executable(${executable} ${sources} ${${project}_SOURCES} ${${subproject}_SOURCES})
+macro(build_subproject_for_board project board subproject executable)
+    add_executable(${executable} ${${board}_SOURCES} ${${project}_SOURCES} ${${subproject}_SOURCES})
     target_include_directories(${executable} PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${OS_INCLUDES}
-        ${DRIVER_INCLUDES}
-        ${${board}_INCLUDES}
-        ${${project}_INCLUDES}
-        ${${subproject}_INCLUDES}
+        ${OS_INCDIR}
+        ${DRIVER_INCDIR}
+        ${${board}_INCDIR}
+        ${${project}_INCDIR}
+        ${${subproject}_INCDIR}
     )
 
     target_link_libraries(${executable} PRIVATE

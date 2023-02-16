@@ -7,6 +7,9 @@ set(${board_name}_FIRMWARE "STM32CubeF2")
 set(${board_name}_FIRMWARE_DIR ${firmware_${${board_name}_FIRMWARE}_DIR})
 set(${board_name}_HAL_INCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/STM32F2xx_HAL_Driver/Inc)
 set(${board_name}_HAL_SRCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/STM32F2xx_HAL_Driver/Src)
+set(${board_name}_CMSIS_INCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS/Include)
+set(${board_name}_CMSIS_DEVICE_INCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS/Device/ST/STM32F2xx/Include)
+set(${board_name}_CMSIS_DEVICE_SRCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS/Device/ST/STM32F2xx/Source/Templates)
 set(${board_name}_INCDIR ${${board_name}_DIR}/include)
 
 # The individual HAL source files

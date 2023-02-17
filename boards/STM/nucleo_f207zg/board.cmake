@@ -16,6 +16,7 @@ set(${board_name}_CMSIS_DEVICE_SRCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSI
 set(${board_name}_INCDIR ${${board_name}_DIR}/include)
 set(${board_name}_INCDIR_HAL_LIB ${${board_name}_DIR}/hal/include)
 set(${board_name}_HAL_INCDIR_LEGACY ${${board_name}_HAL_INCDIR}/Legacy)
+set(${board_name}_STARTUP_SRC ${${board_name}_CMSIS_DEVICE_SRCDIR}/gcc/startup_stm32f207xx.s)
 
 # The individual HAL source files
 set(${board_name}_HAL_SRCS

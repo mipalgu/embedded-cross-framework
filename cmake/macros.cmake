@@ -98,7 +98,14 @@ endmacro()
 
 # Build the subproject for the given board
 macro(build_subproject_for_board project board subproject executable)
-    add_executable(${executable} ${${project}_SOURCES} ${${subproject}_SOURCES})
+    if(NOT ${subproject}_STARTUP_SRC)
+        if(NOT ${project}_STARTUP_SRC)
+            set(${subproject}_STARTUP_SRC ${${board}_STARTUP_SRC})
+        else()
+            set(${subproject}_STARTUP_SRC ${${project}_STARTUP_SRC})
+        endif()
+    endif()
+    add_executable(${executable} ${${subproject}_STARTUP_SRC} ${${project}_SOURCES} ${${subproject}_SOURCES})
     target_compile_options(${executable} PRIVATE
         ${${board}_CFLAGS}
         ${${project}_CFLAGS}
@@ -138,9 +145,9 @@ macro(build_subproject_for_board project board subproject executable)
 
     # Create hex, bin, and s-records
     add_custom_command(TARGET ${executable} POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${executable}> ${executable}.hex
-        COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${executable}> ${executable}.bin
-        COMMAND ${CMAKE_OBJCOPY} -Osrec --srec-len=64 $<TARGET_FILE:${executable}> ${executable}.s19
+        COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${executable}> ${subproject}.hex
+        COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${executable}> ${subproject}.bin
+        COMMAND ${CMAKE_OBJCOPY} -Osrec --srec-len=64 $<TARGET_FILE:${executable}> ${subproject}.s19
     )
 
     # Print the binary size

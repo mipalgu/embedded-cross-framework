@@ -1,3 +1,7 @@
 {
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "files.associations": {
+        "stm32f2xx_hal.h": "c",
+        "stm32f2xx_hal_conf.h": "c"
+    }
 }

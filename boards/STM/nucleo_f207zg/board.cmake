@@ -11,14 +11,16 @@ set(${board_name}_CMSIS_INCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS/Inclu
 set(${board_name}_CMSIS_DEVICE_INCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS/Device/ST/STM32F2xx/Include)
 set(${board_name}_CMSIS_DEVICE_SRCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS/Device/ST/STM32F2xx/Source/Templates)
 set(${board_name}_INCDIR ${${board_name}_DIR}/include)
+set(${board_name}_INCDIR_HAL_LIB ${${board_name}_DIR}/hal/include)
+set(${board_name}_HAL_INCDIR_LEGACY ${${board_name}_HAL_INCDIR}/Legacy)
 
 # The individual HAL source files
 set(${board_name}_HAL_SRCS
+    ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_adc.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_adc_ex.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_can.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_cortex.c
-    ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_crc.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_cryp.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_dac.c
@@ -79,6 +81,13 @@ set(${board_name}_HAL_SRCS
 )
 
 add_library(${board_name}_HAL STATIC ${${board_name}_HAL_SRCS})
-target_include_directories(${board_name}_HAL PUBLIC ${${board_name}_HAL_INCDIR})
+target_include_directories(${board_name}_HAL
+    PRIVATE ${${board_name}_INCDIR_HAL_LIB}
+    PUBLIC ${${board_name}_INCDIR}
+    ${${board_name}_HAL_INCDIR}
+    ${${board_name}_HAL_INCDIR_LEGACY}
+    ${${board_name}_CMSIS_DEVICE_INCDIR}
+    ${${board_name}_CMSIS_INCDIR}
+)
 
 set(${board_name}_LIBS ${board_name}_HAL ${board_name}_CMSIS ${board_name}_CMSIS_DEVICE)

@@ -3,9 +3,6 @@
 #ifndef STM32F2XX_HAL_CONF_H_
 #define STM32F2XX_HAL_CONF_H_
 
-// The device this library is for
-#define STM32F207xx
-
 // Module selection
 #define HAL_MODULE_ENABLED
 #define HAL_ADC_MODULE_ENABLED
@@ -27,8 +24,8 @@
 #define HAL_IWDG_MODULE_ENABLED
 #define HAL_RNG_MODULE_ENABLED
 #define HAL_RTC_MODULE_ENABLED
-#define HAL_SD_MODULE_ENABLED
-#define HAL_MMC_MODULE_ENABLED
+//#define HAL_SD_MODULE_ENABLED
+//#define HAL_MMC_MODULE_ENABLED
 #define HAL_SPI_MODULE_ENABLED
 #define HAL_TIM_MODULE_ENABLED
 #define HAL_UART_MODULE_ENABLED
@@ -46,7 +43,6 @@
 #define HAL_PWR_MODULE_ENABLED
 #define HAL_CORTEX_MODULE_ENABLED
 
-// By default, all HAL register callbacks are disabled.
 #ifndef USE_HAL_ADC_REGISTER_CALLBACKS
 #  define USE_HAL_ADC_REGISTER_CALLBACKS 0U
 #endif
@@ -140,6 +136,11 @@
 #  define HSE_VALUE 8000000U
 #endif
 
+#ifndef  HSE_STARTUP_TIMEOUT
+/// External high-speed oscillator startup timeout in milliseconds.
+#  define HSE_STARTUP_TIMEOUT 100U
+#endif
+
 #ifndef HSI_VALUE
 /// Internal high-speed oscillator clock frequency in Hz.
 #  define HSI_VALUE 16000000U
@@ -160,6 +161,11 @@
 #  define LSI_VALUE 32000U
 #endif
 
+#ifndef EXTERNAL_CLOCK_VALUE
+/// External clock frequency in Hz.
+#  define EXTERNAL_CLOCK_VALUE 12288000U
+#endif
+
 #ifndef VDD_VALUE
 /// VDD in millivolts.
 #  define VDD_VALUE 3300U
@@ -177,17 +183,17 @@
 
 #ifndef PREFETCH_ENABLE
 /// Enable prefetch.
-#  define PREFETCH_ENABLE 1U
+#  define PREFETCH_ENABLE 0U
 #endif
 
 #ifndef INSTRUCTION_CACHE_ENABLE
 /// Enable instruction cache.
-#  define INSTRUCTION_CACHE_ENABLE 1U
+#  define INSTRUCTION_CACHE_ENABLE 0U
 #endif
 
 #ifndef DATA_CACHE_ENABLE
 /// Enable data cache.
-#  define DATA_CACHE_ENABLE 1U
+#  define DATA_CACHE_ENABLE 0U
 #endif
 
 // Ethernet configuration
@@ -269,7 +275,7 @@
 #endif
 #ifndef PHY_BSR
 /// PHY basic status register.
-#  define PHY_BSR 0x01U
+#  define PHY_BSR 0x00U
 #endif
 
 // Extended PHY registers.

@@ -3,6 +3,9 @@
 //
 #ifndef CONFIG_H_
 
+// Enable the following HAL modules.
+#define HAL_GPIO_MODULE_ENABLED
+
 #include "hal.h"
 
 // Definitions used in the project.

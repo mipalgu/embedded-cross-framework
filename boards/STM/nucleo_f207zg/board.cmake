@@ -3,6 +3,9 @@
 #
 set(${board_name}_CPUNAME "ARM Cortex-M3")
 set(${board_name}_CPU "ARM_CPU_CORTEX_M3")
+set(${board_name}_DEFINES -DSTM32F207xx -DSTM32F2 -DSTM32F207ZG)
+set(${board_name}_CFLAGS -mcpu=cortex-m3 -mthumb -mthumb-interwork -ffunction-sections -fdata-sections -fno-common -fmessage-length=0)
+set(${board_name}_LDFLAGS -mcpu=cortex-m3 -mthumb -mthumb-interwork -Wl,--gc-sections -Wl,--print-memory-usage)
 set(${board_name}_FIRMWARE "STM32CubeF2")
 set(${board_name}_FIRMWARE_DIR ${firmware_${${board_name}_FIRMWARE}_DIR})
 set(${board_name}_HAL_INCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/STM32F2xx_HAL_Driver/Inc)
@@ -16,6 +19,7 @@ set(${board_name}_HAL_INCDIR_LEGACY ${${board_name}_HAL_INCDIR}/Legacy)
 
 # The individual HAL source files
 set(${board_name}_HAL_SRCS
+    ${${board_name}_CMSIS_DEVICE_SRCDIR}/system_stm32f2xx.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_adc.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_adc_ex.c
@@ -81,6 +85,8 @@ set(${board_name}_HAL_SRCS
 )
 
 add_library(${board_name}_HAL STATIC ${${board_name}_HAL_SRCS})
+target_compile_options(${board_name}_HAL PRIVATE ${${board_name}_CFLAGS})
+target_compile_definitions(${board_name}_HAL PRIVATE ${${board_name}_DEFINES})
 target_include_directories(${board_name}_HAL
     PRIVATE ${${board_name}_INCDIR_HAL_LIB}
     PUBLIC ${${board_name}_INCDIR}
@@ -90,4 +96,8 @@ target_include_directories(${board_name}_HAL
     ${${board_name}_CMSIS_INCDIR}
 )
 
-set(${board_name}_LIBS ${board_name}_HAL ${board_name}_CMSIS ${board_name}_CMSIS_DEVICE)
+set(${board_name}_LIBS
+    ${board_name}_HAL
+    #${board_name}_CMSIS
+    #${board_name}_CMSIS_DEVICE
+)

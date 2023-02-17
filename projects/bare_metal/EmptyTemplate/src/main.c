@@ -110,7 +110,7 @@ static void init_gpio(void)
 static void abort_operation(void)
 {
 #ifdef __CMSIS_GCC_H
-    __disable_irq():
+    __disable_irq();
 #endif
     // Wait forever.
     while (1)

@@ -98,16 +98,35 @@ endmacro()
 
 # Build the subproject for the given board
 macro(build_subproject_for_board project board subproject executable)
-    add_executable(${executable} ${${board}_SOURCES} ${${project}_SOURCES} ${${subproject}_SOURCES})
+    add_executable(${executable} ${${project}_SOURCES} ${${subproject}_SOURCES})
+    target_compile_options(${executable} PRIVATE
+        ${${board}_CFLAGS}
+        ${${project}_CFLAGS}
+        ${${subproject}_CFLAGS}
+    )
+    target_compile_definitions(${executable} PRIVATE
+        ${${board}_DEFINES}
+        ${${project}_DEFINES}
+        ${${subproject}_DEFINES}
+    )
     target_include_directories(${executable} PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${OS_INCDIR}
         ${DRIVER_INCDIR}
-        ${${board}_INCDIR}
         ${${project}_INCDIR}
         ${${subproject}_INCDIR}
+        ${${board}_INCDIR}
+        ${${board}_HAL_INCDIR}
+        ${${board}_HAL_INCDIR_LEGACY}
+        ${${board}_CMSIS_DEVICE_INCDIR}
+        ${${board}_CMSIS_INCDIR}
     )
 
+    target_link_options(${executable} PRIVATE
+        ${${board}_LDFLAGS}
+        ${${project}_LDFLAGS}
+        ${${subproject}_LDFLAGS}
+    )
     target_link_libraries(${executable} PRIVATE
         ${TOOLCHAIN_LIBS}
         ${OS_LIBS}

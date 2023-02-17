@@ -143,6 +143,11 @@
 #  define HSE_VALUE 8000000U
 #endif
 
+#ifndef  HSE_STARTUP_TIMEOUT
+/// External high-speed oscillator startup timeout in milliseconds.
+#  define HSE_STARTUP_TIMEOUT 100U
+#endif
+
 #ifndef HSI_VALUE
 /// Internal high-speed oscillator clock frequency in Hz.
 #  define HSI_VALUE 16000000U
@@ -161,6 +166,11 @@
 #ifndef LSI_VALUE
 /// Internal low-speed oscillator clock frequency in Hz.
 #  define LSI_VALUE 32000U
+#endif
+
+#ifndef EXTERNAL_CLOCK_VALUE
+/// External clock frequency in Hz.
+#  define EXTERNAL_CLOCK_VALUE 12288000U
 #endif
 
 #ifndef VDD_VALUE
@@ -361,6 +371,9 @@
 /// Use SPI CRC.
 #  define USE_SPI_CRC 0U
 #endif
+
+// Include the common HAL header file.
+#include "stm32f2xx_hal_def.h"
 
 // Include the configured HAL modules.
 #ifdef HAL_RCC_MODULE_ENABLED

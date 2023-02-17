@@ -11,6 +11,6 @@ set(${project_name}_SOURCES
 )
 
 # Include directories for the project.
-set(${project_name}_INCLUDES
+set(${project_name}_INCDIR
     ${${project_name}_DIR}/include
 )

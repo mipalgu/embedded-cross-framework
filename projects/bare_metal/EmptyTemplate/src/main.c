@@ -22,9 +22,9 @@ int main(void)
     while (1)
     {
         // Do something
-#ifdef GPIOA
+#ifdef LED1_GPIO
         // Toggle the LED 1 pin.
-        HAL_GPIO_TogglePin(GPIOA, LED1_PIN);
+        HAL_GPIO_TogglePin(LED1_GPIO, LED1_PIN);
         // Sleep for half a second.
         HAL_Delay(500);
 #endif

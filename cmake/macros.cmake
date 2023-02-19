@@ -129,10 +129,18 @@ macro(build_subproject_for_board project board subproject executable)
         ${${board}_CMSIS_INCDIR}
     )
 
+    if(NOT ${subproject}_LINKER_SCRIPT)
+        if(NOT ${project}_LINKER_SCRIPT)
+            set(${subproject}_LINKER_SCRIPT ${${board}_LINKER_SCRIPT})
+        else()
+            set(${subproject}_LINKER_SCRIPT ${${project}_LINKER_SCRIPT})
+        endif()
+    endif()
     target_link_options(${executable} PRIVATE
         ${${board}_LDFLAGS}
         ${${project}_LDFLAGS}
         ${${subproject}_LDFLAGS}
+        -T ${${subproject}_LINKER_SCRIPT}
     )
     target_link_libraries(${executable} PRIVATE
         ${TOOLCHAIN_LIBS}

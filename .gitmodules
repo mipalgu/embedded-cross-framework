@@ -1,3 +1,6 @@
-[submodule "firmware/STM32CubeF2"]
+[submodule "firmware/ST/STM32CubeF2"]
 	path = firmware/ST/STM32CubeF2
 	url = https://github.com/STMicroelectronics/STM32CubeF2.git
+[submodule "firmware/espresif/esp-idf"]
+	path = firmware/espressif/esp-idf-v5.0.1
+	url = https://github.com/espressif/esp-idf.git

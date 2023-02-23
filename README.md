@@ -46,3 +46,15 @@ variables:
  * `ARM_EABI_BINUTILS_PATH`: The path to the binutils for this toolchain.
  * `ARM_EABI_TOOLCHAIN_DIR`: The path to the binaries for this toolchain.
  
+## Examples
+
+Here is an example invocation:
+
+```sh
+cmake --preset arm-none-eabi-gcc-debug -DPROJECTS=EmtpyTemplate
+cmake --build --preset arm-none-eabi-gcc-debug
+```
+
+Replace `EmptyTemplate` with your project (in one of the `projects` subdirectories
+such as `bare_metal`, or use an absolute path).  Ensure that your project folder
+contains a `project.cmake` file with the source files and include directories defined.

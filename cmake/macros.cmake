@@ -81,7 +81,7 @@ macro(build_projects_for_boards projects boards valid_projects)
                 list(APPEND ${board}_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/boards/${board}/libs)
             endif()
         endforeach()
-        build_project_for_boards(${project} ${boards})
+        build_project_for_boards(${project_name} ${boards})
     endforeach()
 endmacro()
 

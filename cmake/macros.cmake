@@ -108,7 +108,15 @@ macro(build_subproject_for_board project board subproject executable)
             set(${subproject}_STARTUP_SRC ${${project}_STARTUP_SRC})
         endif()
     endif()
-    add_executable(${executable} ${${subproject}_STARTUP_SRC} ${${project}_SOURCES} ${${subproject}_SOURCES})
+    add_executable(${executable}
+        ${${subproject}_STARTUP_SRC}
+        ${${project}_SOURCES}
+        ${${subproject}_SOURCES}
+        ${${project}_${${board}_CLASS}_SOURCES}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_SOURCES}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_SOURCES}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}${${board}_MODEL}_SOURCES}
+    )
     target_compile_options(${executable} PRIVATE
         ${${board}_CFLAGS}
         ${${project}_CFLAGS}
@@ -125,6 +133,10 @@ macro(build_subproject_for_board project board subproject executable)
         ${DRIVER_INCDIR}
         ${${project}_INCDIR}
         ${${subproject}_INCDIR}
+        ${${project}_${${board}_CLASS}_INCDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_INCDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_INCDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}${${board}_MODEL}_INCDIR}
         ${${board}_INCDIR}
         ${${board}_HAL_INCDIR}
         ${${board}_HAL_INCDIR_LEGACY}

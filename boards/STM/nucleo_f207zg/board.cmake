@@ -1,13 +1,14 @@
 #
 # The nucleo_f207zg board configuration
 #
+string(TOUPPER ${board_name} BOARD_NAME_UPPERCASE)
 set(${board_name}_CLASS "STM32")
 set(${board_name}_SUBCLASS "F2")
 set(${board_name}_FAMILY "07")
 set(${board_name}_MODEL "ZG")
 set(${board_name}_CPUNAME "ARM Cortex-M3")
 set(${board_name}_CPU "ARM_CPU_CORTEX_M3")
-set(${board_name}_DEFINES -D${${board_name}_CLASS} -D${${board_name}_CLASS}${${board_name}_SUBCLASS} -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY} -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}xx -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL})
+set(${board_name}_DEFINES -D${BOARD_NAME_UPPERCASE} -D${${board_name}_CLASS} -D${${board_name}_CLASS}${${board_name}_SUBCLASS} -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY} -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}xx -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL})
 set(${board_name}_CFLAGS -mcpu=cortex-m3 -mthumb -mthumb-interwork -ffunction-sections -fdata-sections -fno-common -fmessage-length=0)
 set(${board_name}_LDFLAGS -mcpu=cortex-m3 -mthumb -mthumb-interwork -Wl,--gc-sections -Wl,--print-memory-usage)
 set(${board_name}_FIRMWARE "STM32CubeF2")

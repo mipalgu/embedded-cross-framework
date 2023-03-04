@@ -7,5 +7,6 @@
         "stm32f2xx_ll_rcc.h": "c",
         "stm32f2xx_ll_utils.h": "c",
         "stm32f2xx.h": "c"
-    }
+    },
+    "cmake.useCMakePresets", "auto"
 }

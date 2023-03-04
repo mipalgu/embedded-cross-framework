@@ -152,6 +152,7 @@ macro(build_subproject_for_board project board subproject executable)
         endif()
     endif()
     target_link_options(${executable} PRIVATE
+        ${TOOLCHAIN_LINK_FLAGS}
         ${${board}_LDFLAGS}
         ${${project}_LDFLAGS}
         ${${subproject}_LDFLAGS}

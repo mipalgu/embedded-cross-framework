@@ -20,7 +20,30 @@
             },
             "vendor": {
                 "microsoft.com/VisualStudioSettings/CMake/1.0": {
-                    "intelliSenseMode": "linux-gcc-arm"
+                    "intelliSenseMode": "gcc-arm"
+                }
+            }
+        },
+        {
+            "name": "arm-none-eabi-clang-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/.build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/.build/install/${presetName}",
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "toolchains/arm-none-eabi-clang/toolchain.cmake"
+                }
+            },
+            "architecture": {
+                "value": "unspecified",
+                "strategy": "external"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "intelliSenseMode": "clang-arm"
                 }
             }
         },
@@ -41,6 +64,22 @@
             }
         },
         {
+            "name": "arm-none-eabi-clang-debug",
+            "displayName": "arm-none-eabi-clang Debug",
+            "inherits": "arm-none-eabi-clang-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "arm-none-eabi-clang-release",
+            "displayName": "arm-none-eabi-clang Release",
+            "inherits": "arm-none-eabi-clang-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
             "name": "xcode-arm-none-eabi-gcc-debug",
             "displayName": "xcode-arm-none-eabi-gcc Debug",
             "inherits": "arm-none-eabi-gcc-debug",
@@ -50,6 +89,18 @@
             "name": "xcode-arm-none-eabi-gcc-release",
             "displayName": "xcode-arm-none-eabi-gcc Release",
             "inherits": "arm-none-eabi-gcc-release",
+            "generator": "Xcode"
+        },
+        {
+            "name": "xcode-arm-none-eabi-clang-debug",
+            "displayName": "xcode-arm-none-eabi-clang Debug",
+            "inherits": "arm-none-eabi-clang-debug",
+            "generator": "Xcode"
+        },
+        {
+            "name": "xcode-arm-none-eabi-clang-release",
+            "displayName": "xcode-arm-none-eabi-clang Release",
+            "inherits": "arm-none-eabi-clang-release",
             "generator": "Xcode"
         }
     ],
@@ -69,6 +120,22 @@
         {
             "name": "xcode-arm-none-eabi-gcc-release",
             "configurePreset": "xcode-arm-none-eabi-gcc-release"
+        },
+        {
+            "name": "arm-none-eabi-clang-debug",
+            "configurePreset": "arm-none-eabi-clang-debug"
+        },
+        {
+            "name": "arm-none-eabi-clang-release",
+            "configurePreset": "arm-none-eabi-clang-release"
+        },
+        {
+            "name": "xcode-arm-none-eabi-clang-debug",
+            "configurePreset": "xcode-arm-none-eabi-clang-debug"
+        },
+        {
+            "name": "xcode-arm-none-eabi-clang-release",
+            "configurePreset": "xcode-arm-none-eabi-clang-release"
         }
     ]
 }

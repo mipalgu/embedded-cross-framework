@@ -152,6 +152,19 @@ macro(build_subproject_for_board project board subproject executable)
             set(${subproject}_LINKER_SCRIPT ${${project}_LINKER_SCRIPT})
         endif()
     endif()
+    target_link_directories(${executable} PRIVATE
+        ${OS_LIBDIR}
+        ${DRIVER_LIBDIR}
+        ${${board}_LIBDIR}
+        ${${project}_LIBDIR}
+        ${${subproject}_LIBDIR}
+        ${${project}_${${board}_CLASS}_LIBDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_LIBDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_LIBDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}${${board}_MODEL}_LIBDIR}
+        ${TOOLCHAIN_LIBDIR}
+        ${TOOLCHAIN_LIBGCC_DIR}
+    )
     target_link_options(${executable} PRIVATE
         ${TOOLCHAIN_LINK_FLAGS}
         ${${board}_LDFLAGS}

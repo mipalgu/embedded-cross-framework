@@ -23,6 +23,7 @@ set(${board_name}_INCDIR_HAL_LIB ${${board_name}_DIR}/hal/include)
 set(${board_name}_HAL_INCDIR_LEGACY ${${board_name}_HAL_INCDIR}/Legacy)
 set(${board_name}_STARTUP_SRC ${${board_name}_CMSIS_DEVICE_SRCDIR}/gcc/startup_stm32f207xx.s)
 set(${board_name}_LINKER_SCRIPT ${${board_name}_FIRMWARE_DIR}/Projects/NUCLEO-F207ZG/Templates/SW4STM32/STM32F207xG_Nucleo/STM32F207ZGTx_FLASH.ld)
+#set(${board_name}_LIBDIR ${TOOLCHAIN_LIBDIR} ${TOOLCHAIN_LIBGCC_DIR})
 
 # The individual HAL source files
 set(${board_name}_HAL_SRCS

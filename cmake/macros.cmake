@@ -128,6 +128,7 @@ macro(build_subproject_for_board project board subproject executable)
         ${${subproject}_DEFINES}
     )
     target_include_directories(${executable} PRIVATE
+        ${TOOLCHAIN_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${OS_INCDIR}
         ${DRIVER_INCDIR}

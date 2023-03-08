@@ -108,6 +108,24 @@ macro(build_subproject_for_board project board subproject executable)
             set(${subproject}_STARTUP_SRC ${${project}_STARTUP_SRC})
         endif()
     endif()
+    if(${${project}_USE_FREERTOS})
+        message(STATUS "Using FreeRTOS")
+        set(${subproject}_FREERTOS_LIBS ${subproject}_FREERTOS)
+        add_library(${subproject}_FREERTOS STATIC ${${board}_FREERTOS_SRCS})
+        target_compile_options(${subproject}_FREERTOS PRIVATE ${${board}_CFLAGS})
+        target_compile_definitions(${subproject}_FREERTOS PRIVATE ${${board}_DEFINES})
+        target_include_directories(${subproject}_FREERTOS
+            PRIVATE
+            ${${project}_INCDIR}
+            ${${subproject}_INCDIR}
+            ${${project}_${${board}_CLASS}_INCDIR}
+            ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_INCDIR}
+            ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_INCDIR}
+            ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}${${board}_MODEL}_INCDIR}
+            PUBLIC
+            ${${board}_FREERTOS_INCDIRS}
+        )
+    endif()
     add_executable(${executable}
         ${${subproject}_STARTUP_SRC}
         ${${project}_SOURCES}
@@ -143,6 +161,7 @@ macro(build_subproject_for_board project board subproject executable)
         ${${board}_HAL_INCDIR_LEGACY}
         ${${board}_CMSIS_DEVICE_INCDIR}
         ${${board}_CMSIS_INCDIR}
+        ${${board}_FREERTOS_INCDIRS}
     )
 
     if(NOT ${subproject}_LINKER_SCRIPT)
@@ -179,6 +198,7 @@ macro(build_subproject_for_board project board subproject executable)
         ${${board}_LIBS}
         ${${project}_LIBS}
         ${${subproject}_LIBS}
+        ${${subproject}_FREERTOS_LIBS}
     )
 
     # Create hex, bin, and s-records

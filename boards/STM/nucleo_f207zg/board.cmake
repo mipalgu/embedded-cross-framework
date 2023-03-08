@@ -13,14 +13,25 @@ set(${board_name}_CFLAGS ${ARM_CPU_CORTEX_M3_FLAGS} ${ARM_CPU_CORTEX_THUMB_INTER
 set(${board_name}_LDFLAGS ${ARM_CPU_CORTEX_M3_FLAGS} ${ARM_CPU_CORTEX_THUMB_INTERWORK_FLAGS} ${ARM_CPU_ABI_SOFT_FLOAT_FLAGS} -Wl,--gc-sections -Wl,--print-memory-usage)
 set(${board_name}_FIRMWARE "STM32CubeF2")
 set(${board_name}_FIRMWARE_DIR ${firmware_${${board_name}_FIRMWARE}_DIR})
-set(${board_name}_HAL_INCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/STM32F2xx_HAL_Driver/Inc)
-set(${board_name}_HAL_SRCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/STM32F2xx_HAL_Driver/Src)
-set(${board_name}_CMSIS_INCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS/Include)
-set(${board_name}_CMSIS_DEVICE_INCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS/Device/ST/STM32F2xx/Include)
-set(${board_name}_CMSIS_DEVICE_SRCDIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS/Device/ST/STM32F2xx/Source/Templates)
+set(${board_name}_HAL_DIR ${${board_name}_FIRMWARE_DIR}/Drivers/STM32F2xx_HAL_Driver)
+set(${board_name}_HAL_INCDIR ${${board_name}_HAL_DIR}/Inc)
+set(${board_name}_HAL_SRCDIR ${${board_name}_HAL_DIR}/Src)
+set(${board_name}_CMSIS_DIR ${${board_name}_FIRMWARE_DIR}/Drivers/CMSIS)
+set(${board_name}_CMSIS_INCDIR ${${board_name}_CMSIS_DIR}/Include)
+set(${board_name}_CMSIS_DEVICE_INCDIR ${${board_name}_CMSIS_DIR}//Device/ST/STM32F2xx/Include)
+set(${board_name}_CMSIS_DEVICE_SRCDIR ${${board_name}_CMSIS_DIR}//Device/ST/STM32F2xx/Source/Templates)
+set(${board_name}_BOARD_RTOS_DIR ${${board_name}_FIRMWARE_DIR}/Middlewares/Third_Party/FreeRTOS/Source)
+set(${board_name}_BOARD_RTOS_PORTABLE_DIR ${${board_name}_BOARD_RTOS_DIR}/portable)
+set(${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_DIR ${${board_name}_BOARD_RTOS_PORTABLE_DIR}/MemMang)
+set(${board_name}_BOARD_RTOS_PORTABLE_CPU_DIR ${${board_name}_BOARD_RTOS_PORTABLE_DIR}/GCC/ARM_CM3)
+set(${board_name}_BOARD_RTOS_INCDIR ${${board_name}_BOARD_RTOS_DIR}/include)
+set(${board_name}_CMSIS_RTOS_DIR ${${board_name}_BOARD_RTOS_DIR}/CMSIS_RTOS_V2)
 set(${board_name}_INCDIR ${${board_name}_DIR}/include)
 set(${board_name}_INCDIR_HAL_LIB ${${board_name}_DIR}/hal/include)
 set(${board_name}_HAL_INCDIR_LEGACY ${${board_name}_HAL_INCDIR}/Legacy)
+set(${board_name}_CMSIS_RTOS_INCDIR ${${board_name}_CMSIS_RTOS_DIR})
+set(${board_name}_BOARD_RTOS_PORTABLE_CPU_INCDIR ${${board_name}_BOARD_RTOS_PORTABLE_CPU_DIR})
+set(${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_INCDIR ${${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_DIR})
 set(${board_name}_STARTUP_SRC ${${board_name}_CMSIS_DEVICE_SRCDIR}/gcc/startup_stm32f207xx.s)
 set(${board_name}_LINKER_SCRIPT ${${board_name}_FIRMWARE_DIR}/Projects/NUCLEO-F207ZG/Templates/SW4STM32/STM32F207xG_Nucleo/STM32F207ZGTx_FLASH.ld)
 #set(${board_name}_LIBDIR ${TOOLCHAIN_LIBDIR} ${TOOLCHAIN_LIBGCC_DIR})
@@ -90,6 +101,31 @@ set(${board_name}_HAL_SRCS
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_ll_usart.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_ll_usb.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_ll_utils.c
+)
+
+# The individual FreeRTOS source files
+set(${board_name}_FREERTOS_SRCS
+    ${${board_name}_BOARD_RTOS_PORTABLE_CPU_DIR}/port.c
+    ${${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_DIR}/heap_4.c
+    ${${board_name}_CMSIS_RTOS_DIR}/cmsis_os2.c
+    ${${board_name}_BOARD_RTOS_DIR}/croutine.c
+    ${${board_name}_BOARD_RTOS_DIR}/event_groups.c
+    ${${board_name}_BOARD_RTOS_DIR}/list.c
+    ${${board_name}_BOARD_RTOS_DIR}/queue.c
+    ${${board_name}_BOARD_RTOS_DIR}/stream_buffer.c
+    ${${board_name}_BOARD_RTOS_DIR}/tasks.c
+    ${${board_name}_BOARD_RTOS_DIR}/timers.c
+)
+
+# The FreeRTOS library include directories
+set(${board_name}_FREERTOS_INCDIRS
+    ${${board_name}_BOARD_RTOS_PORTABLE_DIR}
+    ${${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_DIR}
+    ${${board_name}_BOARD_RTOS_PORTABLE_CPU_DIR}
+    ${${board_name}_CMSIS_RTOS_DIR}
+    ${${board_name}_BOARD_RTOS_DIR}
+    ${${board_name}_BOARD_RTOS_INCDIR}
+    ${${board_name}_CMSIS_INCDIR}
 )
 
 add_library(${board_name}_HAL STATIC ${${board_name}_HAL_SRCS})

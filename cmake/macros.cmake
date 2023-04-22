@@ -108,6 +108,23 @@ macro(build_subproject_for_board project board subproject executable)
             set(${subproject}_STARTUP_SRC ${${project}_STARTUP_SRC})
         endif()
     endif()
+    foreach(toolchain_lib ${TOOLCHAIN_LINK_LIBS})
+        message(STATUS "Adding ${subproject} toolchain library ${toolchain_lib}")
+        add_library(${subproject}_LIB_${toolchain_lib} STATIC ${TOOLCHAIN_LINK_LIB_${toolchain_lib}_SOURCES})
+        target_compile_options(${subproject}_LIB_${toolchain_lib} PRIVATE ${${board}_CFLAGS})
+        target_compile_definitions(${subproject}_LIB_${toolchain_lib} PRIVATE ${${board}_DEFINES})
+        target_include_directories(${subproject}_LIB_${toolchain_lib}
+            PRIVATE
+            ${${toolchain_lib}_INCDIR}
+            ${${project}_INCDIR}
+            ${${subproject}_INCDIR}
+            ${${project}_${${board}_CLASS}_INCDIR}
+            ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_INCDIR}
+            ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_INCDIR}
+            ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}${${board}_MODEL}_INCDIR}
+        )
+        list(APPEND ${subproject}_TOOLCHAIN_LIBS ${subproject}_LIB_${toolchain_lib})
+    endforeach()
     if(${${project}_USE_FREERTOS})
         message(STATUS "Using FreeRTOS")
         set(${subproject}_FREERTOS_LIBS ${subproject}_FREERTOS)
@@ -126,6 +143,7 @@ macro(build_subproject_for_board project board subproject executable)
             ${${board}_FREERTOS_INCDIRS}
         )
     endif()
+    # Add any toolchain specific libraries
     add_executable(${executable}
         ${${subproject}_STARTUP_SRC}
         ${${project}_SOURCES}
@@ -199,6 +217,7 @@ macro(build_subproject_for_board project board subproject executable)
         ${${project}_LIBS}
         ${${subproject}_LIBS}
         ${${subproject}_FREERTOS_LIBS}
+        ${${subproject}_TOOLCHAIN_LIBS}
     )
 
     # Create hex, bin, and s-records

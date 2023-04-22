@@ -138,3 +138,7 @@ set(TOOLCHAIN_LIBS
     nosys
     -Wl,--end-group
 )
+
+# Use -Os instead of -O3 in Release configuration
+string(REPLACE "-O3" "-Os" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+string(REPLACE "-O3" "-Os" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")

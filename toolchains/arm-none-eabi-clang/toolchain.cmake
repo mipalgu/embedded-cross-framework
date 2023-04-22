@@ -158,6 +158,10 @@ set(TOOLCHAIN_LIBS
     -Wl,--end-group
 )
 
+# Use -Oz instead of -O3 in Release configuration
+string(REPLACE "-O3" "-Oz" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+string(REPLACE "-O3" "-Oz" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+
 # Toolchain link libraries for clang
 set(TOOLCHAIN_LINK_LIBS "clang_stubs")
 #get_filename_component(TOOLCHAIN_LINK_LIBS_SOURCESUBDIR ${CMAKE_TOOLCHAIN_FILE} DIRECTORY)

@@ -4,3 +4,7 @@
 [submodule "firmware/espresif/esp-idf"]
 	path = firmware/espressif/esp-idf-v5.0.1
 	url = https://github.com/espressif/esp-idf.git
+[submodule "middleware/uswift"]
+	path = middleware/uswift
+	url = git@github.com:mipalgu/uswift.git
+	branch = development

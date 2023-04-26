@@ -1,6 +1,9 @@
 #
 # Project configuration.
 #
+# Set the project name
+project(${project_name} C CXX ASM)
+
 set(${project_name}_VERSION_MAJOR 1)
 set(${project_name}_VERSION_MINOR 0)
 set(${project_name}_VERSION_PATCH 0)

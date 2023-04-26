@@ -143,6 +143,26 @@ macro(build_subproject_for_board project board subproject executable)
             ${${board}_FREERTOS_INCDIRS}
         )
     endif()
+    # Add the middleware/uswift library if support for Swift is enabled.
+    get_property(ENABLED_LANGS GLOBAL PROPERTY ENABLED_LANGUAGES)
+    if("Swift" IN_LIST ENABLED_LANGS)
+        message(STATUS "Using Swift")
+        # set(${subproject}_USWIFT_LIBS ${subproject}_USWIFT)
+        # add_library(${subproject}_USWIFT STATIC ${${board}_USWIFT_SRCS})
+        # target_compile_options(${subproject}_USWIFT PRIVATE ${${board}_CFLAGS})
+        # target_compile_definitions(${subproject}_USWIFT PRIVATE ${${board}_DEFINES})
+        # target_include_directories(${subproject}_USWIFT
+        #     PRIVATE
+        #     ${${project}_INCDIR}
+        #     ${${subproject}_INCDIR}
+        #     ${${project}_${${board}_CLASS}_INCDIR}
+        #     ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_INCDIR}
+        #     ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_INCDIR}
+        #     ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}${${board}_MODEL}_INCDIR}
+        #     PUBLIC
+        #     ${${board}_USWIFT_INCDIRS}
+        # )
+    endif()
     # Add any toolchain specific libraries
     add_executable(${executable}
         ${${subproject}_STARTUP_SRC}
@@ -154,9 +174,16 @@ macro(build_subproject_for_board project board subproject executable)
         ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}${${board}_MODEL}_SOURCES}
     )
     target_compile_options(${executable} PRIVATE
+      $<$<COMPILE_LANGUAGE:C,CXX>:
         ${${board}_CFLAGS}
         ${${project}_CFLAGS}
         ${${subproject}_CFLAGS}
+      >
+      $<$<COMPILE_LANGUAGE:Swift>:
+        ${${board}_SwiftFLAGS}
+        ${${project}_SwiftFLAGS}
+        ${${subproject}_SwiftFLAGS}
+      >
     )
     target_compile_definitions(${executable} PRIVATE
         ${${board}_DEFINES}

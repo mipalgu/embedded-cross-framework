@@ -234,7 +234,7 @@ macro(build_subproject_for_board project board subproject executable)
         ${${board}_LDFLAGS}
         ${${project}_LDFLAGS}
         ${${subproject}_LDFLAGS}
-        -T ${${subproject}_LINKER_SCRIPT}
+        -Xlinker -T${${subproject}_LINKER_SCRIPT}
     )
     target_link_libraries(${executable} PRIVATE
         ${TOOLCHAIN_LIBS}

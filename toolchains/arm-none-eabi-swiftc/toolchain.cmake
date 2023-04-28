@@ -55,13 +55,13 @@ set(TOOLCHAIN_TARGET_FLAGS "-target ${TARGET_TRIPLET}")
 #set(TOOLCHAIN_C_FLAGS ${TOOLCHAIN_TARGET_FLAGS})
 #set(TOOLCHAIN_CXX_FLAGS ${TOOLCHAIN_TARGET_FLAGS})
 #set(TOOLCHAIN_ASM_FLAGS ${TOOLCHAIN_TARGET_FLAGS})
-set(TOOLCHAIN_LINK_FLAGS "-fuse-ld=${CMAKE_LINKER}")
+#set(TOOLCHAIN_LINK_FLAGS "-fuse-ld=${CMAKE_LINKER}")
 
 set(CMAKE_C_FLAGS "${TOOLCHAIN_TARGET_FLAGS} -nostdlib")
 set(CMAKE_CXX_FLAGS "${TOOLCHAIN_TARGET_FLAGS} -nostdlib")
 set(CMAKE_ASM_FLAGS "${TOOLCHAIN_TARGET_FLAGS}")
 set(CMAKE_Swift_FLAGS "${TOOLCHAIN_TARGET_FLAGS} -parse-stdlib")
-set(CMAKE_LINK_FLAGS "${TOOLCHAIN_TARGET_FLAGS} -fuse-ld=${CMAKE_LINKER} -nostdlib")
+set(CMAKE_LINK_FLAGS "${TOOLCHAIN_TARGET_FLAGS} -nostdlib")
 
 set(CMAKE_FIND_ROOT_PATH ${ARM_EABI_BINUTILS_PATH})
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
@@ -152,12 +152,12 @@ set(ARM_SPEC_NOSYS_LINKER_FLAGS "--specs=nosys.specs")
 
 # Toolchain link libraries
 set(TOOLCHAIN_LIBS
-    -Wl,--start-group
+    -Xlinker --start-group
     m
     c
     gcc
     nosys
-    -Wl,--end-group
+    -Xlinker --end-group
 )
 
 # Use -Oz instead of -O3 in Release configuration

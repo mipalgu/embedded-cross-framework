@@ -50,6 +50,8 @@ set(${board_name}_HAL_SRCS
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_dac_ex.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_dcmi.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_dcmi_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_dma.c
+    ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_dma_ex.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_eth.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_exti.c
     ${${board_name}_HAL_SRCDIR}/stm32f2xx_hal_flash.c

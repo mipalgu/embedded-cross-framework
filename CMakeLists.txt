@@ -52,7 +52,7 @@ find_firmware(ALL_FIRMWARE)
 
 # Find and check boards.
 find_boards(ALL_BOARDS)
-check_boards("${ALL_BOARDS}")
+check_boards(ALL_BOARDS)
 
 # Find projects.
 find_projects(ALL_PROJECTS)

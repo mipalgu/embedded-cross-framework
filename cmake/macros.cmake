@@ -30,15 +30,18 @@ macro(find_firmware firmware_list)
 endmacro()
 
 # Check or set the BOARD variable against/to supported boards
-macro(check_boards valid_boards)
+function(check_boards valid_boards)
     if(NOT BOARDS OR BOARDS STREQUAL "ALL_BOARDS")
         set(BOARDS ${valid_boards})
     else()
-        if (NOT BOARDS MATCHES ${valid_boards})
-            message(FATAL_ERROR "Board(s) ${BOARDS} not supported by ${PROJECT}")
-        endif()
+        foreach(board ${valid_boards})
+            if(BOARDS MATCHES ${board})
+                return()
+            endif()
+        endforeach()
+        message(FATAL_ERROR "Board(s) ${BOARDS} not supported by ${PROJECT}")
     endif()
-endmacro()
+endfunction()
 
 # Build the given projects for the given boards.
 macro(build_projects_for_boards projects boards valid_projects)

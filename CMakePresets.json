@@ -141,6 +141,18 @@
             "displayName": "xcode-arm-none-eabi-clang Release",
             "inherits": "arm-none-eabi-clang-release",
             "generator": "Xcode"
+        },
+        {
+            "name": "xcode-arm-none-eabi-swiftc-debug",
+            "displayName": "xcode-arm-none-eabi-swiftc Debug",
+            "inherits": "arm-none-eabi-swiftc-debug",
+            "generator": "Xcode"
+        },
+        {
+            "name": "xcode-arm-none-eabi-swiftc-release",
+            "displayName": "xcode-arm-none-eabi-swiftc Release",
+            "inherits": "arm-none-eabi-swiftc-release",
+            "generator": "Xcode"
         }
     ],
     "buildPresets": [

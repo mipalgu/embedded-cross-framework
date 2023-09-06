@@ -46,7 +46,6 @@ set(XILINX_UPLOAD_COMMANDS
     "open_project ${XILINX_PROJECT_FILE}"
     "open_hw_manager"
     "connect_hw_server"
-    "current_hw_target"
     "open_hw_target"
     "create_hw_bitstream -hw_device [current_hw_device] ${VIVADO_BITSTREAM}"
     "program_hw_device"

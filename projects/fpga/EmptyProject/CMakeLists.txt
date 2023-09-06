@@ -42,9 +42,25 @@ set(XILINX_CLEAN_COMMANDS
 )
 string(REPLACE ";" "\n" XILINX_CLEAN_SCRIPT "${XILINX_CLEAN_COMMANDS}")
 
+set(XILINX_UPLOAD_COMMANDS
+    "open_project ${XILINX_PROJECT_FILE}"
+    "open_hw_manager"
+    "connect_hw_server"
+    "current_hw_target"
+    "open_hw_target"
+    "current_hw_device"
+    "create_hw_bitstream -hw_device [current_hw_device] ${VIVADO_BITSTREAM}"
+    "program_hw_device"
+    "disconnect_hw_server"
+    "close_project"
+)
+string(REPLACE ";" "\n" XILINX_UPLOAD_SCRIPT "${XILINX_UPLOAD_COMMANDS}")
+
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/build.tcl ${XILINX_BUILD_SCRIPT})
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl ${XILINX_CLEAN_SCRIPT})
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl ${XILINX_UPLOAD_SCRIPT})
 
-add_custom_target(XILINX_BUILD ALL ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/build.tcl VERBATIM)
-add_custom_target(XILINX_CLEAN ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl VERBATIM)
+add_custom_target(xilinx-build ALL ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/build.tcl VERBATIM)
+add_custom_target(xilinx-clean ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl VERBATIM)
+add_custom_target(xilinx-upload ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl VERBATIM)
 

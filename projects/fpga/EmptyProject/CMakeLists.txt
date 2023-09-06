@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.12)
 project(EmptyProject NONE)
 
 set(${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY ${PROJECT_SOURCE_DIR}/vivado_project)
@@ -14,23 +15,40 @@ set(XILINX_PACKAGE clg400)
 set(XILINX_SPEED_GRADE -1)
 set(XILINX_PART ${XILINX_FPGA}${XILINX_PACKAGE}${XILINX_SPEED_GRADE})
 set(XILINX_PROJECT_FILE ${${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY}/${CMAKE_PROJECT_NAME}.xpr)
-
-message("Searching for vhd files in ${${CMAKE_PROJECT_NAME}_HDL_SOURCES_DIR}." DEBUG)
+set(VIVADO_BIN ${VIVADO_INSTALL_LOCATION}/bin/vivado)
 
 file(GLOB ${CMAKE_PROJECT_NAME}_SRCS CONFIGURE_DEPENDS "${${CMAKE_PROJECT_NAME}_HDL_SOURCES_DIR}/*.vhd")
 file(GLOB ${CMAKE_PROJECT_NAME}_CONSTRAINTS CONFIGURE_DEPENDS "${${CMAKE_PROJECT_NAME}_CONSTRAINTS_DIR}/*.xdc")
 
-add_custom_target(SOURCE_VIVADO_SETTINGS COMMAND bash -c "source ${VIVADO_SETTINGS_LOCATION}")
-add_custom_target(XILINX_OPEN_PROJECT bash -c "vivado -mode tcl -source <(echo \"open_project ${XILINX_PROJECT_FILE};add_files ${${CMAKE_PROJECT_NAME}_SRCS}\")" VERBATIM DEPENDS SOURCE_VIVADO_SETTINGS)
-add_custom_target(XILINX_ADD_FILES
-    bash -c "vivado -mode tcl -source <(echo \"add_files ${${CMAKE_PROJECT_NAME}_SRCS}\")" VERBATIM
-    COMMAND bash -c "vivado -mode tcl -source <(echo \"add_files ${${CMAKE_PROJECT_NAME}_CONSTRAINTS}\")" VERBATIM
-    DEPENDS XILINX_OPEN_PROJECT
+set(XILINX_BUILD_COMMANDS
+    "open_project ${XILINX_PROJECT_FILE}"
+    "add_files ${${CMAKE_PROJECT_NAME}_SRCS}"
+    "add_files ${${CMAKE_PROJECT_NAME}_CONSTRAINTS}"
+    "launch_runs synth_1 -jobs 8"
+    "wait_on_run synth_1"
+    "launch_runs impl_1 -jobs 8"
+    "wait_on_run impl_1"
+    "launch_runs impl_1 -to_step write_bitstream -jobs 8"
+    "wait_on_run impl_1"
+    "open_run impl_1"
+    "write_bitstream -force ${${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY}/${CMAKE_PROJECT_NAME}.runs/impl_1/${CMAKE_PROJECT_NAME}.bit"
+    "close_project"
 )
-add_custom_target(XILINX_SYNTHESIS bash -c "vivado -mode tcl -source <(echo \"launch_runs synth_1 -jobs 8\")" VERBATIM COMMAND bash -c "vivado -mode tcl -source <(echo \"wait_on_run synth_1\")" VERBATIM DEPENDS XILINX_ADD_FILES)
-add_custom_target(XILINX_IMPLEMENTATION bash -c "vivado -mode tcl -source <(echo \"launch_runs impl_1 -jobs 8\")" VERBATIM COMMAND bash -c "vivado -mode tcl -source <(echo \"wait_on_run impl_1\")" VERBATIM DEPENDS XILINX_SYNTHESIS)
-add_custom_target(XILINX_BITSTREAM bash -c "vivado -mode tcl -source <(echo \"launch_runs impl_1 -to_step write_bitstream -jobs 8\")" VERBATIM COMMAND bash -c "vivado -mode tcl -source <(echo \"wait_on_run impl_1\")" VERBATIM DEPENDS XILINX_IMPLEMENTATION)
-add_custom_target(XILINX_WRITE_BITSTREAM bash -c "vivado -mode tcl -source <(echo \"write_bitstream -force ${${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY}/${CMAKE_PROJECT_NAME}.runs/impl_1/${CMAKE_PROJECT_NAME}.bit\")" VERBATIM DEPENDS XILINX_BITSTREAM)
-add_custom_target(XILINX_BUILD ALL bash -c "vivado -mode tcl -source <(echo \"close_project\")" VERBATIM DEPENDS XILINX_WRITE_BITSTREAM)
-add_custom_target(XILINX_CLEAN bash -c "vivado -mode tcl -source <(echo \"reset_run synth_1\")" VERBATIM)
+string(REPLACE ";" "\n" XILINX_BUILD_SCRIPT "${XILINX_BUILD_COMMANDS}")
+
+set(XILINX_CLEAN_COMMANDS
+    "open_project ${XILINX_PROJECT_FILE}"
+    "reset_run synth_1"
+    "close_project"
+)
+string(REPLACE ";" "\n" XILINX_CLEAN_SCRIPT "${XILINX_CLEAN_COMMANDS}")
+
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/build.tcl ${XILINX_BUILD_SCRIPT})
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl ${XILINX_CLEAN_SCRIPT})
+
+message("Xilinx build commands:\n${XILINX_BUILD_COMMANDS}")
+
+add_custom_target(SOURCE_VIVADO_SETTINGS COMMAND bash -c "source ${VIVADO_SETTINGS_LOCATION}")
+add_custom_target(XILINX_BUILD ALL bash -c "${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/build.tcl" VERBATIM DEPENDS SOURCE_VIVADO_SETTINGS)
+add_custom_target(XILINX_CLEAN bash -c "${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl" VERBATIM)
 

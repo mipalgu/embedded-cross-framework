@@ -49,6 +49,7 @@ set(XILINX_UPLOAD_COMMANDS
     "open_hw_target"
     "create_hw_bitstream -hw_device [current_hw_device] ${VIVADO_BITSTREAM}"
     "program_hw_device"
+    "close_hw_target"
     "disconnect_hw_server"
     "close_project"
 )

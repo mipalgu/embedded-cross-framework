@@ -52,14 +52,34 @@ set(XILINX_UPLOAD_COMMANDS
     "close_hw_target"
     "disconnect_hw_server"
     "close_project"
+    "quit"
 )
 string(REPLACE ";" "\n" XILINX_UPLOAD_SCRIPT "${XILINX_UPLOAD_COMMANDS}")
 
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/build.tcl ${XILINX_BUILD_SCRIPT})
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl ${XILINX_CLEAN_SCRIPT})
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl ${XILINX_UPLOAD_SCRIPT})
+set(BUILD_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/build.tcl)
+set(CLEAN_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl)
+set(UPLOAD_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl)
 
-add_custom_target(xilinx-build ALL ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/build.tcl VERBATIM BYPRODUCTS ${VIVADO_BITSTREAM})
-add_custom_target(xilinx-clean ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl VERBATIM)
-add_custom_target(xilinx-upload ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl VERBATIM DEPENDS ${VIVADO_BITSTREAM})
+
+file(WRITE ${CLEAN_SCRIPT} ${XILINX_CLEAN_SCRIPT})
+file(WRITE ${UPLOAD_SCRIPT} ${XILINX_UPLOAD_SCRIPT})
+file(WRITE ${BUILD_SCRIPT} ${XILINX_BUILD_SCRIPT})
+
+add_custom_target(
+    xilinx-build ALL
+    ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/build.tcl VERBATIM
+    BYPRODUCTS ${VIVADO_BITSTREAM}
+    DEPENDS ${BUILD_SCRIPT}
+)
+
+add_custom_target(
+    xilinx-clean
+    ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl VERBATIM
+    DEPENDS ${CLEAN_SCRIPT}
+)
+# add_custom_target(xilinx-install ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl VERBATIM DEPENDS ${VIVADO_BITSTREAM})
+install(
+    CODE "execute_process(COMMAND ${VIVADO_BIN} -mode tcl -source ${UPLOAD_SCRIPT})"
+    DEPENDS ${VIVADO_BITSTREAM} ${UPLOAD_SCRIPT}
+)
 

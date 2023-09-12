@@ -71,6 +71,27 @@
             }
         },
         {
+            "name": "fpga-xilinx-unknown-vivado-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/vivado_project/${sourceDir}.runs/impl_1",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type" : "FILEPATH",
+                    "value": "toolchains/fpga-xilinx-unknown-vivado/toolchain.cmake"
+                }
+            },
+            "architecture": {
+                "value": "unspecified",
+                "strategy": "external"
+            }
+        },
+        {
+            "name": "fpga-xilinx-xc7z020-vivado",
+            "displayName": "fpga-xilinx-xc7z020-vivado",
+            "inherits": "fpga-xilinx-unknown-vivado-base"
+        },
+        {
             "name": "arm-none-eabi-gcc-debug",
             "displayName": "arm-none-eabi-gcc Debug",
             "inherits": "arm-none-eabi-gcc-base",

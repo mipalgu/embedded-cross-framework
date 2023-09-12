@@ -92,13 +92,96 @@ macro(build_project_for_boards project boards)
     foreach(board ${boards})
         cmake_path(GET board FILENAME board_name)
         set(subproject ${project}_${board_name})
-        set(executable ${subproject}.elf)
-        if (${board} IN_LIST ${project}_BOARDS OR NOT ${project}_BOARDS)
-            build_subproject_for_board(${project} ${board} ${subproject} ${executable})
+        if(DEFINED ${TARGET_TRIPLET}_USE_FPGA)
+            set(executable ${subproject}.bit)
+            if (${board} IN_LIST ${project}_BOARDS OR NOT ${project}_BOARDS)
+                create_build_scripts_for_board(${project} ${board} ${subproject} ${executable})
+            else()
+                message(STATUS "Project ${project} does not support board ${board} (supported boards: ${${project}_BOARDS})")
+            endif()
         else()
-            message(STATUS "Project ${project} does not support board ${board} (supported boards: ${${project}_BOARDS})")
+            set(executable ${subproject}.elf)
+            if (${board} IN_LIST ${project}_BOARDS OR NOT ${project}_BOARDS)
+                build_subproject_for_board(${project} ${board} ${subproject} ${executable})
+            else()
+                message(STATUS "Project ${project} does not support board ${board} (supported boards: ${${project}_BOARDS})")
+            endif()
         endif()
     endforeach()
+endmacro()
+
+# Create the build scripts for FPGA subprojects.
+macro(create_build_scripts_for_board project board subproject executable)
+    message(STATUS "Building FPGA project ${subproject} for board ${board} in project ${project} creating executable ${executable}.")
+    set(${subproject}_BASE ${project}/projects/fpga/${subproject})
+    if (DEFINED ${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY)
+        set(${subproject}_PROJECT_BASE ${${subproject}_BASE}/${subproject}_PROJECT_DIRECTORY)
+    else()
+        set(${subproject}_PROJECT_BASE ${${subproject}_BASE})
+    endif()
+    set(${subproject}_SOURCES_PARENT_DIR ${${subproject}_PROJECT_BASE}/${subproject}.srcs)
+    set(${subproject}_PROJECT_FILE ${${subproject}_PROJECT_BASE}/${subproject}.xpr)
+    set(${subproject}_HDL_SOURCES_DIR ${${subproject}_SOURCES_PARENT_DIR}/sources_1/new)
+    set(${subproject}_CONSTRAINTS_DIR ${${subproject}_SOURCES_PARENT_DIR}/constrs_1/new)
+    
+    set(${project}_BITSTREAM ${${subproject}_PROJECT_BASE}/${CMAKE_PROJECT_NAME}.runs/impl_1/${executable})
+    file(GLOB ${subproject}_SRCS CONFIGURE_DEPENDS "${${project}_HDL_SOURCES_DIR}/*.vhd" "${${subproject}_HDL_SOURCES_DIR}/*.v")
+    file(GLOB ${subproject}_CONSTRAINTS CONFIGURE_DEPENDS "${${subproject}_CONSTRAINTS_DIR}/*.xdc")
+    set(${subproject}_BUILD_COMMANDS
+        "open_project ${${subproject}_PROJECT_FILE}"
+        "add_files ${${subproject}_SRCS}"
+        "add_files ${${subproject}_CONSTRAINTS}"
+        "launch_runs synth_1 -jobs 8"
+        "wait_on_run synth_1"
+        "launch_runs impl_1 -jobs 8"
+        "wait_on_run impl_1"
+        "open_run impl_1"
+        "write_bitstream -force ${${subproject}_BITSTREAM}"
+        "close_project"
+    )
+    string(REPLACE ";" "\n" ${subproject}_BUILD_SCRIPT "${${subproject}_BUILD_COMMANDS}")
+    set(${subproject}_CLEAN_COMMANDS
+        "open_project ${${subproject}_PROJECT_FILE}"
+        "reset_run synth_1"
+        "close_project"
+    )
+    string(REPLACE ";" "\n" ${subproject}_CLEAN_SCRIPT "${${subproject}_CLEAN_COMMANDS}")
+    set(${subproject}_UPLOAD_COMMANDS
+        "open_project ${${subproject}_PROJECT_FILE}"
+        "open_hw_manager"
+        "connect_hw_server"
+        "open_hw_target"
+        "create_hw_bitstream -hw_device [current_hw_device] ${${subproject}_BITSTREAM}"
+        "program_hw_device"
+        "close_hw_target"
+        "disconnect_hw_server"
+        "close_project"
+        "quit"
+    )
+    string(REPLACE ";" "\n" ${subproject}_UPLOAD_SCRIPT "${${subproject}_UPLOAD_COMMANDS}")
+    set(${subproject}_BUILD_SCRIPT_LOC ${CMAKE_CURRENT_BINARY_DIR}/build.tcl)
+    set(${subproject}_CLEAN_SCRIPT_LOC ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl)
+    set(${subproject}_UPLOAD_SCRIPT_LOC ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl)
+    file(WRITE ${${subproject}_CLEAN_SCRIPT_LOC} ${${subproject}_CLEAN_SCRIPT})
+    file(WRITE ${${subproject}_UPLOAD_SCRIPT_LOC} ${${subproject}_UPLOAD_SCRIPT})
+    file(WRITE ${${subproject}_BUILD_SCRIPT_LOC} ${${subproject}_BUILD_SCRIPT})
+    add_custom_target(
+        xilinx-build ALL
+        ${CMAKE_FPGA_COMPILER} ${CMAKE_FPGA_FLAGS} ${subproject}_BUILD_SCRIPT_LOC VERBATIM
+        BYPRODUCTS ${${subproject}_BITSTREAM}
+        DEPENDS ${${subproject}_BUILD_SCRIPT_LOC}
+    )
+
+    add_custom_target(
+        xilinx-clean
+        ${CMAKE_FPGA_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_CLEAN_SCRIPT_LOC} VERBATIM
+        DEPENDS ${${subproject}_CLEAN_SCRIPT_LOC}
+    )
+    # add_custom_target(xilinx-install ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl VERBATIM DEPENDS ${VIVADO_BITSTREAM})
+    install(
+        CODE "execute_process(COMMAND ${CMAKE_FPGA_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_UPLOAD_SCRIPT_LOC})"
+        DEPENDS ${${subproject}_BITSTREAM} ${${subproject}_UPLOAD_SCRIPT_LOC}
+    )
 endmacro()
 
 # Build the subproject for the given board

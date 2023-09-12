@@ -12,4 +12,4 @@ find_program(TOOLCHAIN_COMPILER "vivado${TOOLCHAIN_EXE}")
 
 set(CMAKE_FPGA_COMPILER ${TOOLCHAIN_COMPILER})
 set(CMAKE_FPGA_FLAGS -mode tcl -source)
-
+set(${TARGET_TRIPLET}_USE_FPGA yes)

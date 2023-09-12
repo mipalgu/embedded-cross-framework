@@ -79,6 +79,10 @@
                 "CMAKE_TOOLCHAIN_FILE": {
                     "type" : "FILEPATH",
                     "value": "toolchains/fpga-xilinx-unknown-vivado/toolchain.cmake"
+                },
+                "CMAKE_LANGUAGE_COMPILER": {
+                    "type": "STRING",
+                    "value": "vivado"
                 }
             },
             "architecture": {

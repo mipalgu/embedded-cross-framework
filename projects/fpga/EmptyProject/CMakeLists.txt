@@ -59,7 +59,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/build.tcl ${XILINX_BUILD_SCRIPT})
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl ${XILINX_CLEAN_SCRIPT})
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl ${XILINX_UPLOAD_SCRIPT})
 
-add_custom_target(xilinx-build ALL ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/build.tcl VERBATIM)
+add_custom_target(xilinx-build ALL ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/build.tcl VERBATIM BYPRODUCTS ${VIVADO_BITSTREAM})
 add_custom_target(xilinx-clean ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/clean.tcl VERBATIM)
-add_custom_target(xilinx-upload ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl VERBATIM)
+add_custom_target(xilinx-upload ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl VERBATIM DEPENDS ${VIVADO_BITSTREAM})
 

@@ -34,7 +34,7 @@ set(${board_name}_BOARD_RTOS_PORTABLE_CPU_INCDIR ${${board_name}_BOARD_RTOS_PORT
 set(${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_INCDIR ${${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_DIR})
 set(${board_name}_STARTUP_SRC ${${board_name}_CMSIS_DEVICE_SRCDIR}/gcc/startup_stm32f207xx.s)
 set(${board_name}_LINKER_SCRIPT ${${board_name}_FIRMWARE_DIR}/Projects/NUCLEO-F207ZG/Templates/SW4STM32/STM32F207xG_Nucleo/STM32F207ZGTx_FLASH.ld)
-set(${board_name}_LIBDIR ${ARM_EABI_V7M_NOFP_TOOLCHAIN_LIBDIR} ${ARM_EABI_V7M_NOFP_TOOLCHAIN_LIBGCC_DIR})
+set(${board_name}_LIBDIR ${TOOLCHAIN_V7M_NOFP_LIBDIR} ${TOOLCHAIN_V7M_NOFP_LIBGCC_DIR})
 MESSAGE(STATUS "${board_name}_LIBDIR: " ${${board_name}_LIBDIR})
 MESSAGE(STATUS "${board_name}_INCDIR: " ${${board_name}_INCDIR})
 

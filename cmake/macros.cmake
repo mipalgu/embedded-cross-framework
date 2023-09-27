@@ -195,14 +195,14 @@ macro(build_subproject_for_board project board subproject executable)
     target_include_directories(${executable} PRIVATE
         ${TOOLCHAIN_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${${subproject}_INCDIR}
         ${OS_INCDIR}
         ${DRIVER_INCDIR}
-        ${${project}_INCDIR}
-        ${${subproject}_INCDIR}
-        ${${project}_${${board}_CLASS}_INCDIR}
-        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_INCDIR}
-        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_INCDIR}
         ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}${${board}_MODEL}_INCDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_INCDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_INCDIR}
+        ${${project}_${${board}_CLASS}_INCDIR}
+        ${${project}_INCDIR}
         ${${board}_INCDIR}
         ${${board}_HAL_INCDIR}
         ${${board}_HAL_INCDIR_LEGACY}
@@ -219,15 +219,15 @@ macro(build_subproject_for_board project board subproject executable)
         endif()
     endif()
     target_link_directories(${executable} PRIVATE
+        ${${subproject}_LIBDIR}
         ${OS_LIBDIR}
         ${DRIVER_LIBDIR}
-        ${${board}_LIBDIR}
-        ${${project}_LIBDIR}
-        ${${subproject}_LIBDIR}
-        ${${project}_${${board}_CLASS}_LIBDIR}
-        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_LIBDIR}
-        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_LIBDIR}
         ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}${${board}_MODEL}_LIBDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}${${board}_FAMILY}_LIBDIR}
+        ${${project}_${${board}_CLASS}${${board}_SUBCLASS}_LIBDIR}
+        ${${project}_${${board}_CLASS}_LIBDIR}
+        ${${project}_LIBDIR}
+        ${${board}_LIBDIR}
         ${TOOLCHAIN_LIBDIR}
         ${TOOLCHAIN_LIBGCC_DIR}
     )

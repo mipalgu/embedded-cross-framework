@@ -13,20 +13,105 @@ ENDIF()
 # The triplet to use for the target
 SET(TARGET_TRIPLET "arm-none-eabi")
 
+# Supported architectures
+set(ARM_EABI_TARGET_ARCHS
+    GENERIC
+    V5TE_SOFT
+    V5TE_HARD
+    THUMB_NOFP
+    V6M
+    V7_NOFP
+    V7_FP_HARD
+    V7_FP_SOFT
+    V7A_FP_HARD
+    V7A_FP_SOFT
+    V7A_SIMD_HARD
+    V7A_SIMD_SOFT
+    V7A_NOFP
+    V7M_NOFP
+    V7R_FP_HARD
+    V7R_FP_SOFT
+    V7EM_NOFP
+    V7EM_DP_HARD
+    V7EM_DP_SOFT
+    V7EM_FP_HARD
+    V7EM_FP_SOFT
+    V7VE_SIMD_HARD
+    V7VE_SIMD_soft
+    V8A_NOFP
+    V8A_SIMD_HARD
+    V8A_SIMD_SOFT
+    V8M_BASE_NOFP
+    V8M_NOFP
+    V8M_DP_HARD
+    V8M_DP_SOFT
+    V8M_FP_HARD
+    V8M_FP_SOFT
+    V81M_MVE
+)
+set(ARM_EABI_LIBDIR_GENERIC        ".")
+set(ARM_EABI_LIBDIR_V5TE_SOFT      "arm/v5te/softfp/")
+set(ARM_EABI_LIBDIR_V5TE_HARD      "arm/v5te/hard/")
+set(ARM_EABI_LIBDIR_THUMB_NOFP     "thumb/nofp/")
+set(ARM_EABI_LIBDIR_V6M            "thumb/v6-m/nofp/")
+set(ARM_EABI_LIBDIR_V7_NOFP        "thumb/v7/nofp/")
+set(ARM_EABI_LIBDIR_V7_FP_HARD     "thumb/v7+fp/hard/")
+set(ARM_EABI_LIBDIR_V7_FP_SOFT     "thumb/v7+fp/softfp/")
+set(ARM_EABI_LIBDIR_V7A_FP_HARD    "thumb/v7-a+fp/hard/")
+set(ARM_EABI_LIBDIR_V7A_FP_SOFT    "thumb/v7-a+fp/softfp/")
+set(ARM_EABI_LIBDIR_V7A_SIMD_HARD  "thumb/v7-a+simd/hard/")
+set(ARM_EABI_LIBDIR_V7A_SIMD_SOFT  "thumb/v7-a+simd/softfp/")
+set(ARM_EABI_LIBDIR_V7A_NOFP       "thumb/v7-a/nofp/")
+set(ARM_EABI_LIBDIR_V7M_NOFP       "thumb/v7-m/nofp/")
+set(ARM_EABI_LIBDIR_V7R_FP_HARD    "thumb/v7-r+fp.sp/hard/")
+set(ARM_EABI_LIBDIR_V7R_FP_SOFT    "thumb/v7-r+fp.sp/softfp/")
+set(ARM_EABI_LIBDIR_V7EM_NOFP      "thumb/v7e-m/nofp/")
+set(ARM_EABI_LIBDIR_V7EM_DP_HARD   "thumb/v7e-m+dp/hard/")
+set(ARM_EABI_LIBDIR_V7EM_DP_SOFT   "thumb/v7e-m+dp/softfp/")
+set(ARM_EABI_LIBDIR_V7EM_FP_HARD   "thumb/v7e-m+fp/hard/")
+set(ARM_EABI_LIBDIR_V7EM_FP_SOFT   "thumb/v7e-m+fp/softfp/")
+set(ARM_EABI_LIBDIR_V7VE_SIMD_HARD "thumb/v7ve+simd/hard/")
+set(ARM_EABI_LIBDIR_V7VE_SIMD_SOFT "thumb/v7ve+simd/softfp/")
+set(ARM_EABI_LIBDIR_V8A_NOFP       "thumb/v8-a/nofp/")
+set(ARM_EABI_LIBDIR_V8A_SIMD_HARD  "thumb/v8-a+simd/hard/")
+set(ARM_EABI_LIBDIR_V8A_SIMD_SOFT  "thumb/v8-a+simd/softfp/")
+set(ARM_EABI_LIBDIR_V8M_BASE_NOFP  "thumb/v8-m.base/nofp/")
+set(ARM_EABI_LIBDIR_V8M_NOFP       "thumb/v8-m.main/nofp/")
+set(ARM_EABI_LIBDIR_V8M_DP_HARD    "thumb/v8-m.main+dp/hard/")
+set(ARM_EABI_LIBDIR_V8M_DP_SOFT    "thumb/v8-m.main+dp/softfp/")
+set(ARM_EABI_LIBDIR_V8M_FP_HARD    "thumb/v8-m.main+fp/hard/")
+set(ARM_EABI_LIBDIR_V8M_FP_SOFT    "thumb/v8-m.main+fp/softfp/")
+set(ARM_EABI_LIBDIR_V81M_MVE       "thumb/v8.1-m.main+mve/hard/")
+
 find_program(TOOLCHAIN_COMPILER "${TARGET_TRIPLET}-gcc${TOOLCHAIN_EXE}")
 MESSAGE(STATUS "TOOLCHAIN_COMPILER: " ${TOOLCHAIN_COMPILER})
 get_filename_component(ARM_EABI_TOOLCHAIN_DIR ${TOOLCHAIN_COMPILER} DIRECTORY)
 find_file(TOOLCHAIN_STRING_H NAMES "string.h" PATHS ${ARM_EABI_TOOLCHAIN_DIR}/../${TARGET_TRIPLET}/include /usr/local/${TARGET_TRIPLET}/include /usr/${TARGET_TRIPLET}/include /usr/include/${TARGET_TRIPLET} /Applications/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/include /Applications/Developer/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/include  /Applications/Devel/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/include)
 get_filename_component(ARM_EABI_TOOLCHAIN_INCLUDE_DIR ${TOOLCHAIN_STRING_H} DIRECTORY)
-find_library(TOOLCHAIN_LIBC NAMES "c" PATHS ${ARM_EABI_TOOLCHAIN_DIR}/../${TARGET_TRIPLET}/lib/thumb/v7-m/nofp /usr/local/${TARGET_TRIPLET}/lib /usr/${TARGET_TRIPLET}/lib /usr/lib/${TARGET_TRIPLET}/lib /Applications/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/lib/thumb/v7-m/nofp /Applications/Developer/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/lib/thumb/v7-m/nofp  /Applications/Devel/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/lib/thumb/v7-m/nofp)
-get_filename_component(ARM_EABI_TOOLCHAIN_LIB_DIR ${TOOLCHAIN_LIBC} DIRECTORY)
+foreach(arch ${ARM_EABI_TARGET_ARCHS})
+    find_library(ARM_EABI_${arch}_TOOLCHAIN_LIBC NAMES "c" PATHS ${ARM_EABI_TOOLCHAIN_DIR}/../${TARGET_TRIPLET}/lib/${ARM_EABI_LIBDIR_${arch}} /usr/local/${TARGET_TRIPLET}/lib/${ARM_EABI_LIBDIR_${arch}} /usr/${TARGET_TRIPLET}/lib/${ARM_EABI_LIBDIR_${arch}} /usr/local/lib/${TARGET_TRIPLET}/lib/${ARM_EABI_LIBDIR_${arch}} /Applications/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/lib/${ARM_EABI_LIBDIR_${arch}} /Applications/Developer/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/lib/${ARM_EABI_LIBDIR_${arch}}  /Applications/Devel/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/lib/${ARM_EABI_LIBDIR_${arch}})
+    get_filename_component(ARM_EABI_${arch}_TOOLCHAIN_LIB_DIR ${ARM_EABI_${arch}_TOOLCHAIN_LIBC} DIRECTORY)
+    find_library(ARM_EABI_${arch}_TOOLCHAIN_LIBGCC NAMES "gcc" PATHS ${ARM_EABI_TOOLCHAIN_DIR}/../${TARGET_TRIPLET}/lib/gcc/${TARGET_TRIPLET}/*/${ARM_EABI_LIBDIR_${arch}} /usr/local/${TARGET_TRIPLET}/lib/gcc/${TARGET_TRIPLET}/*/${ARM_EABI_LIBDIR_${arch}} /usr/${TARGET_TRIPLET}/lib/gcc/${TARGET_TRIPLET}/*/${ARM_EABI_LIBDIR_${arch}} /usr/local/lib/gcc/${TARGET_TRIPLET}/*/${TARGET_TRIPLET}/lib/${ARM_EABI_LIBDIR_${arch}} /Applications/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/lib/gcc/${TARGET_TRIPLET}/*/${ARM_EABI_LIBDIR_${arch}} /Applications/Developer/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/lib/gcc/${TARGET_TRIPLET}/*/${ARM_EABI_LIBDIR_${arch}}  /Applications/Devel/ArmGNUToolchain/*/${TARGET_TRIPLET}/${TARGET_TRIPLET}/lib/gcc/${TARGET_TRIPLET}/*/${ARM_EABI_LIBDIR_${arch}})
+    get_filename_component(ARM_EABI_${arch}_TOOLCHAIN_LIBGCC_DIR ${ARM_EABI_${arch}_TOOLCHAIN_LIBGCC} DIRECTORY)
+    set(TOOLCHAIN_${arch}_INCLUDE_DIRS ${ARM_EABI_TOOLCHAIN_INCLUDE_DIR})
+    set(TOOLCHAIN_${arch}_LIBDIR ${ARM_EABI_${arch}_TOOLCHAIN_LIB_DIR})
+    set(TOOLCHAIN_${arch}_LIBGCC_DIR ${ARM_EABI_${arch}_TOOLCHAIN_LIBGCC_DIR})
+    #set(TOOLCHAIN_LINKER_FLAG "-Xlinker")
+    set(TOOLCHAIN_${arch}_LINKER_PREFIX "-Wl,")
+    set(TOOLCHAIN_${arch}_LINKER_EXTRA_LDFLAGS ${TOOLCHAIN_LINKER_PREFIX}--print-memory-usage)
+    MESSAGE(STATUS "TOOLCHAIN_${arch}_LIBRARY_DIR: " ${TOOLCHAIN_${arch}_LIBDIR})
+    MESSAGE(STATUS "TOOLCHAIN_${arch}_LIBGCC_DIR : " ${TOOLCHAIN_${arch}_LIBGCC_DIR})
+endforeach()
+
 set(TOOLCHAIN_INCLUDE_DIRS ${ARM_EABI_TOOLCHAIN_INCLUDE_DIR})
-set(TOOLCHAIN_LIBDIR ${ARM_EABI_TOOLCHAIN_LIB_DIR})
+set(TOOLCHAIN_LIBDIR ${ARM_EABI_GENERIC_TOOLCHAIN_LIB_DIR})
+set(TOOLCHAIN_LIBGCC_DIR ${ARM_EABI_GENERIC_TOOLCHAIN_LIBGCC_DIR})
 #set(TOOLCHAIN_LINKER_FLAG "-Xlinker")
 set(TOOLCHAIN_LINKER_PREFIX "-Wl,")
 set(TOOLCHAIN_LINKER_EXTRA_LDFLAGS ${TOOLCHAIN_LINKER_PREFIX}--print-memory-usage)
 MESSAGE(STATUS "TOOLCHAIN_INCLUDE_DIR: " ${TOOLCHAIN_INCLUDE_DIRS})
 MESSAGE(STATUS "TOOLCHAIN_LIBRARY_DIR: " ${TOOLCHAIN_LIBDIR})
+MESSAGE(STATUS "TOOLCHAIN_LIBGCC_DIR : " ${TOOLCHAIN_LIBGCC_DIR})
 
 set(ARM_EABI_BINUTILS_PATH ${ARM_EABI_TOOLCHAIN_DIR}) 
 set(TOOLCHAIN_PREFIX ${ARM_EABI_TOOLCHAIN_DIR}/${TARGET_TRIPLET})

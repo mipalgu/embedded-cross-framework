@@ -218,6 +218,10 @@ macro(build_subproject_for_board project board subproject executable)
             set(${subproject}_LINKER_SCRIPT ${${project}_LINKER_SCRIPT})
         endif()
     endif()
+    if(${subproject}_LINKER_SCRIPT)
+       set(${subproject}_LINKER_ARGS ${TOOLCHAIN_LINKER_SCRIPT_FLAGS}${${subproject}_LINKER_SCRIPT})
+       MESSAGE(STATUS "${subproject}_LINKER_ARGS: ${${subproject}_LINKER_ARGS} ${TOOLCHAIN_XLINKER_PREFIX} ${TOOLCHAIN_LINKER_SCRIPT_PREFIX}${${subproject}_LINKER_SCRIPT}")
+    endif()
     target_link_directories(${executable} PRIVATE
         ${${subproject}_LIBDIR}
         ${OS_LIBDIR}
@@ -236,7 +240,7 @@ macro(build_subproject_for_board project board subproject executable)
         ${${board}_LDFLAGS}
         ${${project}_LDFLAGS}
         ${${subproject}_LDFLAGS}
-        ${TOOLCHAIN_LINKER_SCRIPT_FLAGS}${${subproject}_LINKER_SCRIPT}
+        ${${subproject}_LINKER_ARGS}
     )
     target_link_libraries(${executable} PRIVATE
         ${TOOLCHAIN_LIBS}

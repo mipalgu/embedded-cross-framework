@@ -155,7 +155,7 @@ set(ARM_SPEC_NOSYS_LINKER_FLAGS "--specs=nosys.specs")
 
 # Toolchain link libraries
 set(TOOLCHAIN_LIBS
-   ${TOOLCHAIN_XLINKER_PREFIX} --start-group
+    ${TOOLCHAIN_XLINKER_PREFIX} --start-group
     m
     c
     gcc

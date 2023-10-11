@@ -257,7 +257,7 @@ macro(build_subproject_for_board project board subproject executable)
     add_custom_command(TARGET ${executable} POST_BUILD
         COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${executable}> ${subproject}.hex
         COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${executable}> ${subproject}.bin
-        COMMAND ${CMAKE_OBJCOPY} -Osrec --srec-len=64 $<TARGET_FILE:${executable}> ${subproject}.s19
+        COMMAND ${CMAKE_OBJCOPY} -Osrec --srec-len=64 $<TARGET_FILE:${executable}> ${subproject}.s19 || cp $<TARGET_FILE:${executable}> ${subproject}.out
     )
 
     # Print the binary size

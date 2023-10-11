@@ -155,12 +155,12 @@ set(ARM_SPEC_NOSYS_LINKER_FLAGS "--specs=nosys.specs")
 
 # Toolchain link libraries
 set(TOOLCHAIN_LIBS
-    -Xlinker --start-group
+   ${TOOLCHAIN_XLINKER_PREFIX} --start-group
     m
     c
     gcc
     nosys
-    -Xlinker --end-group
+    ${TOOLCHAIN_XLINKER_PREFIX} --end-group
 )
 
 # Use -Oz instead of -O3 in Release configuration

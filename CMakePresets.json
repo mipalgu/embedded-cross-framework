@@ -48,6 +48,29 @@
             }
         },
         {
+            "name": "arm-none-eabi-armcl-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/.build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/.build/install/${presetName}",
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "toolchains/arm-none-eabi-armcl/toolchain.cmake"
+                }
+            },
+            "architecture": {
+                "value": "unspecified",
+                "strategy": "external"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "intelliSenseMode": "clang-arm"
+                }
+            }
+        },
+        {
             "name": "arm-none-eabi-swiftc-base",
             "hidden": true,
             "generator": "Ninja",
@@ -123,6 +146,22 @@
             "name": "arm-none-eabi-clang-release",
             "displayName": "arm-none-eabi-clang Release",
             "inherits": "arm-none-eabi-clang-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "arm-none-eabi-armcl-debug",
+            "displayName": "arm-none-eabi-armcl Debug",
+            "inherits": "arm-none-eabi-armcl-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "arm-none-eabi-armcl-release",
+            "displayName": "arm-none-eabi-armcl Release",
+            "inherits": "arm-none-eabi-armcl-base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
@@ -204,6 +243,14 @@
         {
             "name": "arm-none-eabi-clang-release",
             "configurePreset": "arm-none-eabi-clang-release"
+        },
+        {
+            "name": "arm-none-eabi-armcl-debug",
+            "configurePreset": "arm-none-eabi-armcl-debug"
+        },
+        {
+            "name": "arm-none-eabi-armcl-release",
+            "configurePreset": "arm-none-eabi-armcl-release"
         },
         {
             "name": "arm-none-eabi-swiftc-debug",

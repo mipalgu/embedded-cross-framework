@@ -1,5 +1,4 @@
 string(TOUPPER ${board_name} BOARD_NAME_UPPERCASE)
-set(${board_name}_CONTAINS_FPGA "yes")
 set(${board_name}_FPGA_VENDOR "Xilinx")
 set(${board_name}_FPGA "xc7z020")
 set(${board_name}_FPGA_FAMILY "Zynq-7000")

@@ -114,8 +114,8 @@
             }
         },
         {
-            "name": "fpga-xilinx-xc7z020-vivado",
-            "displayName": "fpga-xilinx-xc7z020-vivado",
+            "name": "fpga-xilinx-unknown-vivado",
+            "displayName": "fpga-xilinx-unknown-vivado",
             "inherits": "fpga-xilinx-unknown-vivado-base"
         },
         {

@@ -261,6 +261,10 @@
             "configurePreset": "arm-none-eabi-swiftc-release"
         },
         {
+            "name": "fpga-xilinx-unknown-vivado",
+            "configurePreset": "fpga-xilinx-unknown-vivado"
+        },
+        {
             "name": "xcode-arm-none-eabi-clang-debug",
             "configurePreset": "xcode-arm-none-eabi-clang-debug"
         },

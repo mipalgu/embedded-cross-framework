@@ -97,15 +97,15 @@
             "name": "fpga-xilinx-unknown-vivado-base",
             "hidden": true,
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/vivado_project/${sourceDir}.runs/impl_1",
+            "binaryDir": "${sourceDir}/.build/${presetName}",
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": {
                     "type" : "FILEPATH",
                     "value": "toolchains/fpga-xilinx-unknown-vivado/toolchain.cmake"
                 },
                 "CMAKE_LANGUAGE_COMPILER": {
-                    "type": "STRING",
-                    "value": "vivado"
+                    "type": "PATH",
+                    "value": "/usr/local/tools/Xilinx/Vivado/2023.2/bin/vivado"
                 }
             },
             "architecture": {

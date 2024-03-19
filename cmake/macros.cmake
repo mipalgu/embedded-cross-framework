@@ -113,7 +113,7 @@ endmacro()
 # Create the build scripts for FPGA subprojects.
 macro(create_build_scripts_for_board project board subproject executable)
     message(STATUS "Building FPGA project ${subproject} for board ${board} in project ${project} creating executable ${executable}.")
-    set(${subproject}_BASE ${project}/projects/fpga/${subproject})
+    set(${subproject}_BASE ${subproject})
     if (DEFINED ${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY)
         set(${subproject}_PROJECT_BASE ${${subproject}_BASE}/${subproject}_PROJECT_DIRECTORY)
     else()

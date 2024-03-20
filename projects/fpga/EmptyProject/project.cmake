@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(EmptyProject LANGUAGE NONE)
+project(EmptyProject LANGUAGE HDL)
 
 # set(EmptyProject_PROJECT_DIRECTORY vivado_project)
 

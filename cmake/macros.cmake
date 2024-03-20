@@ -126,11 +126,10 @@ macro(create_build_scripts_for_board project board subproject executable)
     message(STATUS "Project directory: ${${project}_PROJECT_DIRECTORY}")
     file(COPY ${${project}_PROJECT_DIRECTORY} DESTINATION ${${subproject}_PROJECT_BASE})
     set(${subproject}_SOURCES_PARENT_DIR ${${project}_PROJECT_DIRECTORY_NAME}/${project}.srcs)
-    set(${subproject}_PROJECT_FILE ${${project}_PROJECT_DIRECTORY_NAME}/${project}.xpr)
+    set(${subproject}_PROJECT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_PROJECT_BASE}/${${project}_PROJECT_DIRECTORY_NAME}/${project}.xpr)
     set(${subproject}_HDL_SOURCES_DIR ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_PROJECT_BASE}/${${subproject}_SOURCES_PARENT_DIR}/sources_1/new)
     set(${subproject}_CONSTRAINTS_DIR ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_PROJECT_BASE}/${${subproject}_SOURCES_PARENT_DIR}/constrs_1/new)
-    set(${project}_BITSTREAM ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_PROJECT_BASE}/${project}.runs/impl_1/${executable})
-    message(STATUS "HDL Sources: ${${subproject}_HDL_SOURCES_DIR}")
+    set(${subproject}_BITSTREAM ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_PROJECT_BASE}/${${project}_PROJECT_DIRECTORY_NAME}/${project}.runs/impl_1/${executable})
     file(GLOB ${subproject}_SRCS CONFIGURE_DEPENDS "${${subproject}_HDL_SOURCES_DIR}/*.vhd" "${${subproject}_HDL_SOURCES_DIR}/*.v")
     file(GLOB ${subproject}_CONSTRAINTS CONFIGURE_DEPENDS "${${subproject}_CONSTRAINTS_DIR}/*.xdc")
     set(${subproject}_BUILD_COMMANDS
@@ -173,7 +172,7 @@ macro(create_build_scripts_for_board project board subproject executable)
     file(WRITE ${${subproject}_BUILD_SCRIPT_LOC} ${${subproject}_BUILD_SCRIPT})
     add_custom_target(
         xilinx-build ALL
-        ${CMAKE_FPGA_COMPILER} ${CMAKE_FPGA_FLAGS} ${subproject}_BUILD_SCRIPT_LOC VERBATIM
+        ${CMAKE_FPGA_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_BUILD_SCRIPT_LOC} VERBATIM
         BYPRODUCTS ${${subproject}_BITSTREAM}
         DEPENDS ${${subproject}_BUILD_SCRIPT_LOC}
     )

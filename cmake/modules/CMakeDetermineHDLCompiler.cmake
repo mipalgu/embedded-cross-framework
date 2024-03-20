@@ -81,3 +81,4 @@ mark_as_advanced(CMAKE_HDL_COMPILER)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/CMakeHDLCompiler.cmake.in
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/CMakeHDLCompiler.cmake @ONLY
 )
+set(CMAKE_HDL_COMPILER_ENV_VAR "CMAKE_HDL_COMPILER")

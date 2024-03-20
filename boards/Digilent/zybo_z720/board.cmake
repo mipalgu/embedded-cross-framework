@@ -1,0 +1,6 @@
+string(TOUPPER ${board_name} BOARD_NAME_UPPERCASE)
+set(${board_name}_FPGA_VENDOR "Xilinx")
+set(${board_name}_FPGA "xc7z020")
+set(${board_name}_FPGA_FAMILY "Zynq-7000")
+set(${board_name}_FPGA_PACKAGE "clg400")
+set(${board_name}_FPGA_SPEED_GRADE "-1")

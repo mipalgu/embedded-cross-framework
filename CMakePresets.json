@@ -94,6 +94,31 @@
             }
         },
         {
+            "name": "fpga-xilinx-unknown-vivado-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/.build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type" : "FILEPATH",
+                    "value": "toolchains/fpga-xilinx-unknown-vivado/toolchain.cmake"
+                },
+                "FPGA_VENDOR": {
+                    "type": "STRING",
+                    "value": "Xilinx"
+                }
+            },
+            "architecture": {
+                "value": "unspecified",
+                "strategy": "external"
+            }
+        },
+        {
+            "name": "fpga-xilinx-unknown-vivado",
+            "displayName": "fpga-xilinx-unknown-vivado",
+            "inherits": "fpga-xilinx-unknown-vivado-base"
+        },
+        {
             "name": "arm-none-eabi-gcc-debug",
             "displayName": "arm-none-eabi-gcc Debug",
             "inherits": "arm-none-eabi-gcc-base",
@@ -234,6 +259,10 @@
         {
             "name": "arm-none-eabi-swiftc-release",
             "configurePreset": "arm-none-eabi-swiftc-release"
+        },
+        {
+            "name": "fpga-xilinx-unknown-vivado",
+            "configurePreset": "fpga-xilinx-unknown-vivado"
         },
         {
             "name": "xcode-arm-none-eabi-clang-debug",

@@ -172,19 +172,19 @@ macro(create_build_scripts_for_board project board subproject executable)
     file(WRITE ${${subproject}_BUILD_SCRIPT_LOC} ${${subproject}_BUILD_SCRIPT})
     add_custom_target(
         xilinx-build ALL
-        ${CMAKE_FPGA_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_BUILD_SCRIPT_LOC} VERBATIM
+        ${TOOLCHAIN_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_BUILD_SCRIPT_LOC} VERBATIM
         BYPRODUCTS ${${subproject}_BITSTREAM}
         DEPENDS ${${subproject}_BUILD_SCRIPT_LOC}
     )
 
     add_custom_target(
         xilinx-clean
-        ${CMAKE_FPGA_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_CLEAN_SCRIPT_LOC} VERBATIM
+        ${TOOLCHAIN_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_CLEAN_SCRIPT_LOC} VERBATIM
         DEPENDS ${${subproject}_CLEAN_SCRIPT_LOC}
     )
     # add_custom_target(xilinx-install ${VIVADO_BIN} -mode tcl -source ${CMAKE_CURRENT_BINARY_DIR}/upload.tcl VERBATIM DEPENDS ${VIVADO_BITSTREAM})
     install(
-        CODE "execute_process(COMMAND ${CMAKE_FPGA_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_UPLOAD_SCRIPT_LOC})"
+        CODE "execute_process(COMMAND ${TOOLCHAIN_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_UPLOAD_SCRIPT_LOC})"
         DEPENDS ${${subproject}_BITSTREAM} ${${subproject}_UPLOAD_SCRIPT_LOC}
     )
 endmacro()

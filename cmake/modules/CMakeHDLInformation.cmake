@@ -1,4 +1,4 @@
-# CMakeDetermineHDLCompiler.cmake
+# CMakeHDLInformation.cmake
 # embedded-cross-framework
 # 
 # Created by Morgan McColl.
@@ -52,33 +52,3 @@
 # along with this program; if not, see http://www.gnu.org/licenses/
 # or write to the Free Software Foundation, Inc., 51 Franklin Street,
 # Fifth Floor, Boston, MA  02110-1301, USA.
-
-if (NOT CMAKE_HDL_COMPILER)
-    if (NOT FPGA_VENDOR)
-        message(FATAL_ERROR "FPGA vendor not set! Please set FPGA_VENDOR to the vendor of the FPGA used on the board.")
-    endif()
-    if (FPGA_VENDOR STREQUAL "Xilinx" OR FPGA_VENDOR STREQUAL "AMD")
-        set(HDL_BIN_PATH
-            /bin
-            /usr/bin
-            /usr/local/bin
-            /usr/local/tools/Xilinx/Vivado/2023.2/bin
-            /usr/local/tools/Xilinx/Vivado/2023.1/bin
-            /usr/local/tools/Xilinx/Vivado/2022.2/bin
-            /usr/local/tools/Xilinx/Vivado/2022.1/bin
-            /tools/Xilinx/Vivado/2023.2/bin
-            /tools/Xilinx/Vivado/2023.1/bin
-            /tools/Xilinx/Vivado/2022.2/bin
-            /tools/Xilinx/Vivado/2022.1/bin
-        )
-        find_program(CMAKE_HDL_COMPILER NAMES vivado PATHS ${HDL_BIN_PATH})
-    else()
-        message(FATAL_ERROR "${${board_name}_FPGA_VENDOR} is not supported.")
-    endif()
-endif()
-mark_as_advanced(CMAKE_HDL_COMPILER)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/CMakeHDLCompiler.cmake.in
-    ${CMAKE_PLATFORM_INFO_DIR}/CMakeHDLCompiler.cmake @ONLY
-)
-set(CMAKE_HDL_COMPILER_ENV_VAR "CMAKE_HDL_COMPILER")

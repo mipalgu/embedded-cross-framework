@@ -103,9 +103,9 @@
                     "type" : "FILEPATH",
                     "value": "toolchains/fpga-xilinx-unknown-vivado/toolchain.cmake"
                 },
-                "CMAKE_LANGUAGE_COMPILER": {
-                    "type": "PATH",
-                    "value": "/usr/local/tools/Xilinx/Vivado/2023.2/bin/vivado"
+                "FPGA_VENDOR": {
+                    "type": "String",
+                    "value": "AMD"
                 }
             },
             "architecture": {

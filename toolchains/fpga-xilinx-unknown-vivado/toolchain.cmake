@@ -21,6 +21,5 @@ set(HDL_BIN_PATH
     /tools/Xilinx/Vivado/2022.1/bin
 )
 find_program(TOOLCHAIN_COMPILER "vivado${TOOLCHAIN_EXE}" PATHS ${HDL_BIN_PATH})
-set(CMAKE_FPGA_COMPILER ${TOOLCHAIN_COMPILER})
 set(CMAKE_FPGA_FLAGS -mode tcl -source)
 set(${TARGET_TRIPLET}_USE_FPGA yes)

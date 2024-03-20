@@ -104,7 +104,7 @@
                     "value": "toolchains/fpga-xilinx-unknown-vivado/toolchain.cmake"
                 },
                 "FPGA_VENDOR": {
-                    "type": "String",
+                    "type": "STRING",
                     "value": "Xilinx"
                 }
             },

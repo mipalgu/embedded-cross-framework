@@ -88,3 +88,9 @@ You can upload the bitstream to your device via:
 # install
 cmake --build --target install --preset fpga-xilinx-unknown-vivado
 ```
+
+Alternatively, you may clean the build artefacts via:
+```shell
+# clean
+cmake --build --target xilinx-clean --preset fpga-xilinx-unknown-vivado
+```

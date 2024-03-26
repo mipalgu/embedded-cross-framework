@@ -66,7 +66,17 @@ This project demonstrates the ability to compile vivado projects using the `embe
 
 ## Compiling using the Framework
 
-To include a vivado project within the `embedded-cross-framework`, create a new directory in `embedded-cross-framework/projects/fpga`. This directory will contain the relevant `cmake` files and the vivado project. Next, create a new subdirectory within this directory that will contain the vivado project files and source files. By default, the system will assume you have named this folder `vivado_project`, but you may override this behaviour by setting `${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY_NAME`. To avoid tracking the large vivado project, we have ignored it for this example, so you will have to create your own vivado project within the `vivado_project` folder for this demonstration. Lastly, create a new `project.cmake` with the language set to `HDL` and the project name set to the name of your directory within `projects/fpga`.
+To include a vivado project within the `embedded-cross-framework`, create a new directory in `embedded-cross-framework/projects/fpga`.
+This directory will contain the relevant `cmake` files and the vivado project.
+Next, create a new subdirectory within this directory that will contain the vivado project files and source files.
+By default, the system will assume you have named this folder `vivado_project`, but you may override this behaviour by setting `${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY_NAME`.
+To avoid tracking the large vivado project, we have created a submodule with the tracked vivado project.
+To initialise the submodule from the `embedded-cross-framework` root directory, execute:
+
+```shell
+git submodule update --init --recursive projects/fpga/EmptyProject/vivado_project
+```
+Lastly, create a new `project.cmake` with the language set to `HDL` and the project name set to the name of your directory within `projects/fpga`.
 
 To start compiling this project, you may follow the same syntax as all other projects. For Example, to compile using vivado with a Zybo Z720 board, you may invoke the following commands from your terminal:
 

@@ -135,6 +135,7 @@ macro(create_build_scripts_for_board project board subproject executable)
         "open_project ${${subproject}_PROJECT_FILE}"
         "set_property PART ${${board}_FPGA_PART} [current_project]"
         "close_project"
+        "quit"
     )
     string(REPLACE ";" "\n" ${subproject}_CONFIGURE_SCRIPT "${${subproject}_CONFIGURE_SCRIPT}")
     file(GLOB ${subproject}_SRCS CONFIGURE_DEPENDS "${${subproject}_HDL_SOURCES_DIR}/*.vhd" "${${subproject}_HDL_SOURCES_DIR}/*.v")

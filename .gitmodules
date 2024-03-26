@@ -8,3 +8,6 @@
 	path = middleware/uswift
 	url = git@github.com:mipalgu/uswift.git
 	branch = development
+[submodule "projects/fpga/EmptyProject/vivado_project"]
+	path = projects/fpga/EmptyProject/vivado_project
+	url = https://github.com/mipalgu/EmptyProject.git

@@ -180,7 +180,10 @@ macro(create_build_scripts_for_board project board subproject executable)
     file(WRITE ${${subproject}_CLEAN_SCRIPT_LOC} ${${subproject}_CLEAN_SCRIPT})
     file(WRITE ${${subproject}_UPLOAD_SCRIPT_LOC} ${${subproject}_UPLOAD_SCRIPT})
     file(WRITE ${${subproject}_BUILD_SCRIPT_LOC} ${${subproject}_BUILD_SCRIPT})
-    execute_process(COMMAND ${TOOLCHAIN_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_CONFIGURE_SCRIPT_LOC})
+    execute_process(
+        COMMAND ${TOOLCHAIN_COMPILER} ${CMAKE_FPGA_FLAGS} configure.tcl
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_BASE}
+    )
     add_custom_target(
         xilinx-build ALL
         ${TOOLCHAIN_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_BUILD_SCRIPT_LOC} VERBATIM

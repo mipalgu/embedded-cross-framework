@@ -130,6 +130,14 @@ macro(create_build_scripts_for_board project board subproject executable)
     set(${subproject}_HDL_SOURCES_DIR ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_PROJECT_BASE}/${${subproject}_SOURCES_PARENT_DIR}/sources_1/new)
     set(${subproject}_CONSTRAINTS_DIR ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_PROJECT_BASE}/${${subproject}_SOURCES_PARENT_DIR}/constrs_1/new)
     set(${subproject}_BITSTREAM ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_PROJECT_BASE}/${${project}_PROJECT_DIRECTORY_NAME}/${project}.runs/impl_1/${executable})
+    set(
+        ${subproject}_CONFIGURE_SCRIPT
+        "open_project ${${subproject}_PROJECT_FILE}"
+        "set_property PART ${${board}_FPGA_PART} [current_project]"
+        "close_project"
+        "quit"
+    )
+    string(REPLACE ";" "\n" ${subproject}_CONFIGURE_SCRIPT "${${subproject}_CONFIGURE_SCRIPT}")
     file(GLOB ${subproject}_SRCS CONFIGURE_DEPENDS "${${subproject}_HDL_SOURCES_DIR}/*.vhd" "${${subproject}_HDL_SOURCES_DIR}/*.v")
     file(GLOB ${subproject}_CONSTRAINTS CONFIGURE_DEPENDS "${${subproject}_CONSTRAINTS_DIR}/*.xdc")
     set(${subproject}_BUILD_COMMANDS
@@ -164,12 +172,18 @@ macro(create_build_scripts_for_board project board subproject executable)
         "quit"
     )
     string(REPLACE ";" "\n" ${subproject}_UPLOAD_SCRIPT "${${subproject}_UPLOAD_COMMANDS}")
+    set(${subproject}_CONFIGURE_SCRIPT_LOC ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_BASE}/configure.tcl)
     set(${subproject}_BUILD_SCRIPT_LOC ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_BASE}/build.tcl)
     set(${subproject}_CLEAN_SCRIPT_LOC ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_BASE}/clean.tcl)
     set(${subproject}_UPLOAD_SCRIPT_LOC ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_BASE}/upload.tcl)
+    file(WRITE ${${subproject}_CONFIGURE_SCRIPT_LOC} ${${subproject}_CONFIGURE_SCRIPT})
     file(WRITE ${${subproject}_CLEAN_SCRIPT_LOC} ${${subproject}_CLEAN_SCRIPT})
     file(WRITE ${${subproject}_UPLOAD_SCRIPT_LOC} ${${subproject}_UPLOAD_SCRIPT})
     file(WRITE ${${subproject}_BUILD_SCRIPT_LOC} ${${subproject}_BUILD_SCRIPT})
+    execute_process(
+        COMMAND ${TOOLCHAIN_COMPILER} ${CMAKE_FPGA_FLAGS} configure.tcl
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_BASE}
+    )
     add_custom_target(
         xilinx-build ALL
         ${TOOLCHAIN_COMPILER} ${CMAKE_FPGA_FLAGS} ${${subproject}_BUILD_SCRIPT_LOC} VERBATIM

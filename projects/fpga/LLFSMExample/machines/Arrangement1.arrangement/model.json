@@ -1,0 +1,1 @@
+{"clocks":[{"name":"clk","frequency":"50 MHz"}],"externalVariables":"sw: in std_logic;\nled: out std_logic;","machines":[{"mappings":[{"destination":"clk","source":"clk"},{"destination":"sw","source":"sw"},{"destination":"led","source":"led"}],"name":"LEDBlinker","path":"LEDBlinker.machine"}],"globalVariables":""}

@@ -11,3 +11,6 @@
 [submodule "projects/fpga/EmptyProject/vivado_project"]
 	path = projects/fpga/EmptyProject/vivado_project
 	url = https://github.com/mipalgu/EmptyProject.git
+[submodule "projects/fpga/LLFSMExample/vivado_project"]
+	path = projects/fpga/LLFSMExample/vivado_project
+	url = https://github.com/mipalgu/EmptyProject

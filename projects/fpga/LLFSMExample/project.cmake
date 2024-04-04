@@ -54,6 +54,6 @@
 # Fifth Floor, Boston, MA  02110-1301, USA.
 
 cmake_minimum_required(VERSION 3.12)
-project(EmptyProject LANGUAGES HDL_LLFSM)
+project(LLFSMExample LANGUAGES LLFSMHDL HDL)
 
 set(${CMAKE_PROJECT_NAME}_ARRANGEMENT machines/Arrangement1.arrangement)

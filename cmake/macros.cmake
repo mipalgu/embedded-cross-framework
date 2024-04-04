@@ -94,6 +94,10 @@ macro(build_project_for_boards project boards)
         set(subproject ${project}_${board_name})
         if(DEFINED ${TARGET_TRIPLET}_USE_FPGA)
             set(executable ${subproject}.bit)
+            message(STATUS "project: ${project}\nboard: ${board}\nsubproject: ${subproject}\nexecutable: ${executable}")
+            if (${project}_ARRANGEMENT)
+                process_arrangement( ${project} ${board} ${subproject} ${executable})
+            endif()
             if (${board} IN_LIST ${project}_BOARDS OR NOT ${project}_BOARDS)
                 create_build_scripts_for_board(${project} ${board} ${subproject} ${executable})
             else()
@@ -108,6 +112,47 @@ macro(build_project_for_boards project boards)
             endif()
         endif()
     endforeach()
+endmacro()
+
+macro(process_arrangement project board subproject executable)
+    set(LLFSMHDL_BIN_PATH
+        /bin
+        /usr/bin
+        /usr/local/bin
+    )
+    find_program(LLFSMGENERATE NAMES llfsmgenerate PATH ${LLFSMHDL_BIN_PATH})
+    if(LLFSMGENERATE)
+        message(STATUS "Found llfsmgenerate: ${LLFSMGENERATE}")
+        set(${subproject}_BASE ${subproject})
+        if (DEFINED ${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY)
+            set(${subproject}_PROJECT_BASE ${${subproject}_BASE}/${subproject}_PROJECT_DIRECTORY)
+        else()
+            set(${subproject}_PROJECT_BASE ${${subproject}_BASE})
+        endif()
+        if (NOT DEFINED ${project}_PROJECT_DIRECTORY_NAME)
+            set(${project}_PROJECT_DIRECTORY_NAME "vivado_project")
+        endif()
+        set(${project}_PROJECT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/projects/fpga/${project}/${${project}_PROJECT_DIRECTORY_NAME}")
+        get_filename_component(${project}_ARRANGEMENT_PARENT "${CMAKE_CURRENT_SOURCE_DIR}/projects/fpga/${project}/${${project}_ARRANGEMENT}" PATH)
+        get_filename_component(${project}_ARRANGEMENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}/projects/fpga/${project}/${${project}_ARRANGEMENT}" NAME)
+        message(STATUS "executing llfsmgenerate model for ${${project}_ARRANGEMENT_NAME} in ${${project}_ARRANGEMENT_PARENT}")
+        execute_process(
+            COMMAND ${LLFSMGENERATE} model ${${project}_ARRANGEMENT_NAME}
+            WORKING_DIRECTORY ${${project}_ARRANGEMENT_PARENT}
+        )
+        message(STATUS "executing llfsmgenerate vhdl for ${${project}_ARRANGEMENT_NAME} in ${${project}_ARRANGEMENT_PARENT}")
+        execute_process(
+            COMMAND ${LLFSMGENERATE} vhdl ${${project}_ARRANGEMENT_NAME}
+            WORKING_DIRECTORY ${${project}_ARRANGEMENT_PARENT}
+        )
+        message(STATUS "executing llfsmgenerate install for ${${project}_ARRANGEMENT_NAME} in ${${project}_ARRANGEMENT_PARENT}")
+        execute_process(
+            COMMAND ${LLFSMGENERATE} install ${${project}_ARRANGEMENT_NAME} --vivado ${${project}_PROJECT_DIRECTORY}
+            WORKING_DIRECTORY ${${project}_ARRANGEMENT_PARENT}
+        )
+    else()
+        message(FATAL_ERROR "Cannot find llfsmgenerate. Please add llfsmgenerate to your PATH to compile LLFSMs.")
+    endif()
 endmacro()
 
 # Create the build scripts for FPGA subprojects.

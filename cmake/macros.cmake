@@ -114,11 +114,6 @@ macro(build_project_for_boards project boards)
 endmacro()
 
 macro(process_arrangement project board subproject executable)
-    set(LLFSMHDL_BIN_PATH
-        /bin
-        /usr/bin
-        /usr/local/bin
-    )
     get_filename_component(LLFSMGENERATE ${CMAKE_LLFSMHDL_COMPILER} NAME)
     if(LLFSMGENERATE)
         message(STATUS "Found LLFSMHDL compiler: ${CMAKE_LLFSMHDL_COMPILER}")

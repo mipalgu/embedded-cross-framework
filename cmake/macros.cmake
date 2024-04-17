@@ -94,6 +94,9 @@ macro(build_project_for_boards project boards)
         set(subproject ${project}_${board_name})
         if(DEFINED ${TARGET_TRIPLET}_USE_FPGA)
             set(executable ${subproject}.bit)
+            if (${project}_ARRANGEMENT)
+                process_arrangement( ${project} ${board} ${subproject} ${executable})
+            endif()
             if (${board} IN_LIST ${project}_BOARDS OR NOT ${project}_BOARDS)
                 create_build_scripts_for_board(${project} ${board} ${subproject} ${executable})
             else()
@@ -110,12 +113,46 @@ macro(build_project_for_boards project boards)
     endforeach()
 endmacro()
 
+macro(process_arrangement project board subproject executable)
+    get_filename_component(LLFSMGENERATE ${CMAKE_LLFSMHDL_COMPILER} NAME)
+    if(LLFSMGENERATE)
+        message(STATUS "Found LLFSMHDL compiler: ${CMAKE_LLFSMHDL_COMPILER}")
+        if (NOT DEFINED ${project}_PROJECT_DIRECTORY_NAME)
+            set(${project}_PROJECT_DIRECTORY_NAME "vivado_project")
+        endif()
+        set(${project}_PROJECT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/projects/fpga/${project}/${${project}_PROJECT_DIRECTORY_NAME}")
+        get_filename_component(${project}_ARRANGEMENT_PARENT "${CMAKE_CURRENT_SOURCE_DIR}/projects/fpga/${project}/${${project}_ARRANGEMENT}" PATH)
+        get_filename_component(${project}_ARRANGEMENT_NAME "${CMAKE_CURRENT_SOURCE_DIR}/projects/fpga/${project}/${${project}_ARRANGEMENT}" NAME)
+        message(STATUS "executing llfsmgenerate model for ${${project}_ARRANGEMENT_NAME}")
+        execute_process(
+            COMMAND ${LLFSMGENERATE} clean ${${project}_ARRANGEMENT_NAME}
+            WORKING_DIRECTORY ${${project}_ARRANGEMENT_PARENT}
+        )
+        execute_process(
+            COMMAND ${LLFSMGENERATE} model ${${project}_ARRANGEMENT_NAME}
+            WORKING_DIRECTORY ${${project}_ARRANGEMENT_PARENT}
+        )
+        message(STATUS "executing llfsmgenerate vhdl for ${${project}_ARRANGEMENT_NAME}")
+        execute_process(
+            COMMAND ${LLFSMGENERATE} vhdl ${${project}_ARRANGEMENT_NAME}
+            WORKING_DIRECTORY ${${project}_ARRANGEMENT_PARENT}
+        )
+        message(STATUS "executing llfsmgenerate install for ${${project}_ARRANGEMENT_NAME}")
+        execute_process(
+            COMMAND ${LLFSMGENERATE} install ${${project}_ARRANGEMENT_NAME} --vivado ${${project}_PROJECT_DIRECTORY}
+            WORKING_DIRECTORY ${${project}_ARRANGEMENT_PARENT}
+        )
+    else()
+        message(FATAL_ERROR "Cannot find llfsmgenerate. Please add llfsmgenerate to your PATH to compile LLFSMs.")
+    endif()
+endmacro()
+
 # Create the build scripts for FPGA subprojects.
 macro(create_build_scripts_for_board project board subproject executable)
     message(STATUS "Building FPGA project ${subproject} for board ${board} in project ${project} creating executable ${executable}.")
     set(${subproject}_BASE ${subproject})
     if (DEFINED ${CMAKE_PROJECT_NAME}_PROJECT_DIRECTORY)
-        set(${subproject}_PROJECT_BASE ${${subproject}_BASE}/${subproject}_PROJECT_DIRECTORY)
+        set(${subproject}_PROJECT_BASE ${${subproject}_BASE}${${subproject}_PROJECT_DIRECTORY})
     else()
         set(${subproject}_PROJECT_BASE ${${subproject}_BASE})
     endif()
@@ -123,7 +160,6 @@ macro(create_build_scripts_for_board project board subproject executable)
         set(${project}_PROJECT_DIRECTORY_NAME "vivado_project")
     endif()
     set(${project}_PROJECT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/projects/fpga/${project}/${${project}_PROJECT_DIRECTORY_NAME}")
-    message(STATUS "Project directory: ${${project}_PROJECT_DIRECTORY}")
     file(COPY ${${project}_PROJECT_DIRECTORY} DESTINATION ${${subproject}_PROJECT_BASE})
     set(${subproject}_SOURCES_PARENT_DIR ${${project}_PROJECT_DIRECTORY_NAME}/${project}.srcs)
     set(${subproject}_PROJECT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${${subproject}_PROJECT_BASE}/${${project}_PROJECT_DIRECTORY_NAME}/${project}.xpr)
@@ -140,9 +176,13 @@ macro(create_build_scripts_for_board project board subproject executable)
     string(REPLACE ";" "\n" ${subproject}_CONFIGURE_SCRIPT "${${subproject}_CONFIGURE_SCRIPT}")
     file(GLOB ${subproject}_SRCS CONFIGURE_DEPENDS "${${subproject}_HDL_SOURCES_DIR}/*.vhd" "${${subproject}_HDL_SOURCES_DIR}/*.v")
     file(GLOB ${subproject}_CONSTRAINTS CONFIGURE_DEPENDS "${${subproject}_CONSTRAINTS_DIR}/*.xdc")
+    set(${subproject}_SRCS_COMMANDS)
+    foreach(src ${${subproject}_SRCS})
+        list(APPEND ${subproject}_SRCS_COMMANDS "add_files ${src}")
+    endforeach()
     set(${subproject}_BUILD_COMMANDS
         "open_project ${${subproject}_PROJECT_FILE}"
-        "add_files ${${subproject}_SRCS}"
+        ${${subproject}_SRCS_COMMANDS}
         "add_files ${${subproject}_CONSTRAINTS}"
         "launch_runs synth_1 -jobs 8"
         "wait_on_run synth_1"

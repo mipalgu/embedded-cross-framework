@@ -14,3 +14,6 @@
 [submodule "projects/fpga/LLFSMExample/vivado_project"]
 	path = projects/fpga/LLFSMExample/vivado_project
 	url = https://github.com/mipalgu/LLFSMExample.git
+[submodule "firmware/ST/STM32CubeF4"]
+	path = firmware/ST/STM32CubeF4
+	url = https://github.com/STMicroelectronics/STM32CubeF4.git

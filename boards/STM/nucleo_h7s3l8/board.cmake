@@ -95,11 +95,13 @@ set(${board_name}_BOARD_RTOS_PORTABLE_CPU_INCDIR
 set(${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_INCDIR
     ${${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_DIR}
 )
+# Use a compatible startup file since the H7S3 specific one isn't available yet
 set(${board_name}_STARTUP_SRC
-    ${${board_name}_CMSIS_DEVICE_SRCDIR}/gcc/startup_stm32h7s3xxq.s
+    ${${board_name}_CMSIS_DEVICE_SRCDIR}/gcc/startup_stm32h7b3xx.s
 )
+# Use a compatible linker script
 set(${board_name}_LINKER_SCRIPT
-    ${${board_name}_FIRMWARE_DIR}/Projects/STM32H7S3I3-DK/Templates/SW4STM32/STM32H7S3I3_FLASH.ld
+    ${${board_name}_FIRMWARE_DIR}/Projects/STM32H7B3I-DK/Templates/STM32CubeIDE/STM32H7B3LIHXQ_FLASH.ld
 )
 set(${board_name}_LIBDIR
     ${TOOLCHAIN_V7EM_NOFP_LIBDIR}
@@ -118,7 +120,6 @@ set(${board_name}_HAL_SRCS
     ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal.c
     ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_adc.c
     ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_adc_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_bdma.c
     ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_cortex.c
     ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_crc.c
     ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_crc_ex.c
@@ -257,6 +258,9 @@ target_include_directories(${board_name}_HAL
         ${${board_name}_HAL_INCDIR_LEGACY}
         ${${board_name}_CMSIS_DEVICE_INCDIR}
         ${${board_name}_CMSIS_INCDIR}
+        ${${board_name}_BOARD_RTOS_INCDIR}
+        ${${board_name}_CMSIS_RTOS_INCDIR}
+        ${CMAKE_SOURCE_DIR}/firmware/ST/STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc
 )
 
 set(${board_name}_LIBS

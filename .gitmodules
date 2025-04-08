@@ -23,3 +23,6 @@
 [submodule "firmware/ST/STM32CubeH7"]
 	path = firmware/ST/STM32CubeH7
 	url = https://github.com/STMicroelectronics/STM32CubeH7.git
+[submodule "firmware/Raspberry/pico-sdk"]
+	path = firmware/Raspberry/pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk.git

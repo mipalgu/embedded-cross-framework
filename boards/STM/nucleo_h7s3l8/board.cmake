@@ -277,7 +277,6 @@ target_include_directories(${board_name}_HAL
 
 set(${board_name}_LIBS
     ${board_name}_HAL
-    # Commented out libraries:
     # ${board_name}_CMSIS
     # ${board_name}_CMSIS_DEVICE
 )

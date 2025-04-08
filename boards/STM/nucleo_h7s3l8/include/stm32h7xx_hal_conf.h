@@ -7,6 +7,8 @@
 #ifndef STM32H7XX_HAL_CONF_H_
 #define STM32H7XX_HAL_CONF_H_
 
+#include "stm32h7xx_hal_def.h"
+
 // Module selection
 #if !defined(HAL_MODULE_ENABLED) && !defined(HAL_MODULE_DISABLED)
 #  define HAL_MODULE_ENABLED

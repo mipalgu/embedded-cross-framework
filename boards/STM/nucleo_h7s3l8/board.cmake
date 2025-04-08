@@ -4,6 +4,7 @@
 string(TOUPPER ${board_name} BOARD_NAME_UPPERCASE)
 set(${board_name}_CLASS "STM32")
 set(${board_name}_SUBCLASS "H7")
+set(${board_name}_SUPERFAMILY "B3")
 set(${board_name}_FAMILY "S3")
 set(${board_name}_MODEL "L8")
 set(${board_name}_CPUNAME "ARM Cortex-M7")
@@ -13,9 +14,13 @@ set(${board_name}_DEFINES
     -D${${board_name}_CLASS}
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}xx
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_SUPERFAMILY}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_SUPERFAMILY}xx
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}xx
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}
+    -DUSE_HAL_DRIVER
+    -D__IO=volatile
 )
 set(${board_name}_CFLAGS
     ${ARM_CPU_CORTEX_M7_FLAGS}
@@ -89,6 +94,13 @@ set(${board_name}_HAL_INCDIR_LEGACY
 set(${board_name}_CMSIS_RTOS_INCDIR
     ${${board_name}_CMSIS_RTOS_DIR}
 )
+set(${board_name}_CMSIS_CORE_DIR
+    ${${board_name}_CMSIS_DIR}/Core
+)
+set(${board_name}_CMSIS_CORE_INCDIR
+    ${${board_name}_CMSIS_CORE_DIR}/Include
+)
+
 set(${board_name}_BOARD_RTOS_PORTABLE_CPU_INCDIR
     ${${board_name}_BOARD_RTOS_PORTABLE_CPU_DIR}
 )
@@ -258,9 +270,9 @@ target_include_directories(${board_name}_HAL
         ${${board_name}_HAL_INCDIR_LEGACY}
         ${${board_name}_CMSIS_DEVICE_INCDIR}
         ${${board_name}_CMSIS_INCDIR}
+        ${${board_name}_CMSIS_CORE_INCDIR}
         ${${board_name}_BOARD_RTOS_INCDIR}
         ${${board_name}_CMSIS_RTOS_INCDIR}
-        ${CMAKE_SOURCE_DIR}/firmware/ST/STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc
 )
 
 set(${board_name}_LIBS

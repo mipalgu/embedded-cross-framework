@@ -1,7 +1,15 @@
 # Common Raspberry Pi Pico board configuration
 string(TOUPPER ${board_name} BOARD_NAME_UPPERCASE)
-set(${board_name}_CLASS "Raspberry")
-set(${board_name}_SUBCLASS "Pico")
+set(BOARD_VENDOR "Raspberry Pi")
+
+# Default values, can be overwritten by the board configuration
+set(BOARD_DESCRIPTION "Raspberry Pi Pico")
+set(${board_name}_CLASS "RP")        # Raspberry Pi
+set(${board_name}_SUBCLASS "2")      # Dual-core
+set(${board_name}_FAMILY "0")        # Cortex-M0+ architecture
+set(${board_name}_MODEL "4")         # 264KB SRAM (log2(264/16) ≈ 4)
+set(${board_name}_VARIANT "0")       # No integrated flash
+
 set(${board_name}_CPUNAME "ARM Cortex-M0+")
 set(${board_name}_CPU "ARM_CPU_CORTEX_M0PLUS")
 
@@ -14,7 +22,7 @@ set(${board_name}_FIRMWARE_DIR ${firmware_${${board_name}_FIRMWARE}_DIR})
 set(${board_name}_SDK_DIR ${${board_name}_FIRMWARE_DIR})
 
 # Common SDK include directories
-set(${board_name}_SDK_INCDIR 
+set(${board_name}_SDK_INCDIR
     ${${board_name}_SDK_DIR}/src/common/pico_base/include
     ${${board_name}_SDK_DIR}/src/common/pico_stdlib/include
     ${${board_name}_SDK_DIR}/src/rp2_common/hardware_gpio/include
@@ -72,4 +80,4 @@ set(${board_name}_SDK_SRCS
 )
 
 set(${board_name}_INCDIR ${${board_name}_DIR}/include)
-set(${board_name}_INCDIR_HAL_LIB ${${board_name}_DIR}/hal/include) 
+set(${board_name}_INCDIR_HAL_LIB ${${board_name}_DIR}/hal/include)

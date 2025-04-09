@@ -9,6 +9,7 @@ set(${board_name}_FAMILY "3")        # RISC-V Hazard3 architecture
 set(${board_name}_MODEL "5")         # 520KB SRAM (log2(520/16) = 5)
 set(${board_name}_VARIANT "0")       # No integrated flash
 set(${board_name}_CPUNAME "RISC-V")
+set(${board_name}_CPU_ARCHITECTURE "RISCV")
 set(${board_name}_CPU "RISCV")
 
 # Derive MCU settings from board definitions
@@ -45,9 +46,13 @@ set(${board_name}_DEFINES
     -D${BOARD_NAME_UPPERCASE}
     -D${${board_name}_CLASS}
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}xx
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}xx
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}x
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}_${${board_name}_CPU_ARCHITECTURE}
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}_${${board_name}_CPU}
 )
 
@@ -90,4 +95,4 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BOARD_LINKER_FLAGS}")
 
 # Set board source files and include directories
 set(BOARD_SOURCES ${BOARD_SOURCES})
-include_directories(${BOARD_INCLUDE_DIRS}) 
+include_directories(${BOARD_INCLUDE_DIRS})

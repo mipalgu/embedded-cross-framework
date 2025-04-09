@@ -1,0 +1,130 @@
+set(CMAKE_SYSTEM_PROCESSOR RISCV)
+set(CMAKE_SYSTEM_NAME Generic)
+
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
+# Executable file extension
+IF(WIN32)
+    SET(TOOLCHAIN_EXE ".exe")
+ELSE()
+    SET(TOOLCHAIN_EXE "")
+ENDIF()
+
+# The triplet to use for the target
+SET(TARGET_TRIPLET "riscv32-none-elf")
+
+# Supported architectures
+set(RISCV_TARGET_ARCHS
+    RV32I
+    RV32IM
+    RV32IMC
+    RV32IMAC
+    RV32IMAFC
+)
+
+set(RISCV_LIBDIR_RV32I      "rv32i/ilp32/")
+set(RISCV_LIBDIR_RV32IM     "rv32im/ilp32/")
+set(RISCV_LIBDIR_RV32IMC    "rv32imc/ilp32/")
+set(RISCV_LIBDIR_RV32IMAC   "rv32imac/ilp32/")
+set(RISCV_LIBDIR_RV32IMAFC  "rv32imafc/ilp32f/")
+
+# Find GCC toolchain for libraries and includes
+find_program(GCC_TOOLCHAIN_COMPILER "${TARGET_TRIPLET}-gcc${TOOLCHAIN_EXE}")
+get_filename_component(RISCV_GCC_TOOLCHAIN_DIR ${GCC_TOOLCHAIN_COMPILER} DIRECTORY)
+find_file(TOOLCHAIN_STRING_H NAMES "string.h" PATHS ${RISCV_GCC_TOOLCHAIN_DIR}/../${TARGET_TRIPLET}/include)
+get_filename_component(RISCV_TOOLCHAIN_INCLUDE_DIR ${TOOLCHAIN_STRING_H} DIRECTORY)
+
+foreach(arch ${RISCV_TARGET_ARCHS})
+    find_library(RISCV_${arch}_TOOLCHAIN_LIBC NAMES "c" PATHS ${RISCV_GCC_TOOLCHAIN_DIR}/../${TARGET_TRIPLET}/lib/${RISCV_LIBDIR_${arch}})
+    get_filename_component(RISCV_${arch}_TOOLCHAIN_LIB_DIR ${RISCV_${arch}_TOOLCHAIN_LIBC} DIRECTORY)
+    find_library(RISCV_${arch}_TOOLCHAIN_LIBGCC NAMES "gcc" PATHS ${RISCV_GCC_TOOLCHAIN_DIR}/../lib/gcc/${TARGET_TRIPLET}/*/${RISCV_LIBDIR_${arch}})
+    get_filename_component(RISCV_${arch}_TOOLCHAIN_LIBGCC_DIR ${RISCV_${arch}_TOOLCHAIN_LIBGCC} DIRECTORY)
+    set(TOOLCHAIN_${arch}_INCLUDE_DIRS ${RISCV_TOOLCHAIN_INCLUDE_DIR})
+    set(TOOLCHAIN_${arch}_LIBDIR ${RISCV_${arch}_TOOLCHAIN_LIB_DIR})
+    set(TOOLCHAIN_${arch}_LIBGCC_DIR ${RISCV_${arch}_TOOLCHAIN_LIBGCC_DIR})
+    set(TOOLCHAIN_${arch}_LINKER_PREFIX "-Wl,")
+    set(TOOLCHAIN_${arch}_LINKER_EXTRA_LDFLAGS ${TOOLCHAIN_LINKER_PREFIX}--print-memory-usage)
+endforeach()
+
+set(TOOLCHAIN_INCLUDE_DIRS ${RISCV_TOOLCHAIN_INCLUDE_DIR})
+set(TOOLCHAIN_LIBDIR ${RISCV_RV32IMC_TOOLCHAIN_LIB_DIR})
+set(TOOLCHAIN_LIBGCC_DIR ${RISCV_RV32IMC_TOOLCHAIN_LIBGCC_DIR})
+set(TOOLCHAIN_LINKER_PREFIX "-Wl,")
+set(TOOLCHAIN_XLINKER_PREFIX "-Xlinker")
+set(TOOLCHAIN_LINKER_SCRIPT_PREFIX "-T")
+set(TOOLCHAIN_LINKER_SCRIPT_FLAGS ${TOOLCHAIN_XLINKER_PREFIX} ${TOOLCHAIN_LINKER_SCRIPT_PREFIX})
+set(TOOLCHAIN_LINKER_EXTRA_LDFLAGS ${TOOLCHAIN_LINKER_PREFIX}--print-memory-usage)
+
+# Find Clang
+find_program(CLANG_COMPILER "clang${TOOLCHAIN_EXE}")
+get_filename_component(CLANG_BINDIR ${CLANG_COMPILER} DIRECTORY)
+set(CLANG_TARGET_FLAGS "--target=${TARGET_TRIPLET}")
+set(CLANG_SYSROOT_FLAGS "--sysroot=${RISCV_GCC_TOOLCHAIN_DIR}/../${TARGET_TRIPLET}")
+set(CLANG_GCC_TOOLCHAIN_FLAGS "--gcc-toolchain=${RISCV_GCC_TOOLCHAIN_DIR}/..")
+
+set(CMAKE_C_COMPILER "${CLANG_BINDIR}/clang${TOOLCHAIN_EXE}")
+set(CMAKE_CXX_COMPILER "${CLANG_BINDIR}/clang++${TOOLCHAIN_EXE}")
+set(CMAKE_ASM_COMPILER ${CMAKE_C_COMPILER})
+
+# Use GCC binutils
+set(CMAKE_OBJCOPY ${RISCV_GCC_TOOLCHAIN_DIR}/${TARGET_TRIPLET}-objcopy${TOOLCHAIN_EXE} CACHE INTERNAL "objcopy tool")
+set(CMAKE_OBJDUMP ${RISCV_GCC_TOOLCHAIN_DIR}/${TARGET_TRIPLET}-objdump${TOOLCHAIN_EXE} CACHE INTERNAL "objdump tool")
+set(CMAKE_RANLIB ${RISCV_GCC_TOOLCHAIN_DIR}/${TARGET_TRIPLET}-ranlib${TOOLCHAIN_EXE} CACHE INTERNAL "ranlib tool")
+set(CMAKE_READELF ${RISCV_GCC_TOOLCHAIN_DIR}/${TARGET_TRIPLET}-readelf${TOOLCHAIN_EXE} CACHE INTERNAL "readelf tool")
+set(CMAKE_SIZE ${RISCV_GCC_TOOLCHAIN_DIR}/${TARGET_TRIPLET}-size${TOOLCHAIN_EXE} CACHE INTERNAL "size tool")
+set(CMAKE_STRIP ${RISCV_GCC_TOOLCHAIN_DIR}/${TARGET_TRIPLET}-strip${TOOLCHAIN_EXE} CACHE INTERNAL "strip tool")
+set(CMAKE_AR ${RISCV_GCC_TOOLCHAIN_DIR}/${TARGET_TRIPLET}-ar${TOOLCHAIN_EXE} CACHE INTERNAL "ar tool")
+set(CMAKE_NM ${RISCV_GCC_TOOLCHAIN_DIR}/${TARGET_TRIPLET}-nm${TOOLCHAIN_EXE} CACHE INTERNAL "nm tool")
+set(CMAKE_LINKER ${RISCV_GCC_TOOLCHAIN_DIR}/${TARGET_TRIPLET}-ld${TOOLCHAIN_EXE} CACHE INTERNAL "ld tool")
+
+set(CMAKE_FIND_ROOT_PATH ${RISCV_GCC_TOOLCHAIN_DIR})
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+# RISC-V architecture flags
+set(RISCV_ARCH_RV32I_FLAGS "-march=rv32i -mabi=ilp32")
+set(RISCV_ARCH_RV32IM_FLAGS "-march=rv32im -mabi=ilp32")
+set(RISCV_ARCH_RV32IMC_FLAGS "-march=rv32imc -mabi=ilp32")
+set(RISCV_ARCH_RV32IMAC_FLAGS "-march=rv32imac -mabi=ilp32")
+set(RISCV_ARCH_RV32IMAFC_FLAGS "-march=rv32imafc -mabi=ilp32f")
+
+# Floating point ABI
+set(RISCV_ABI_SOFT_FLOAT_FLAGS "-mabi=ilp32")
+set(RISCV_ABI_HARD_FLOAT_FLAGS "-mabi=ilp32f")
+
+# Linker specs
+set(RISCV_SPEC_NANO_LINKER_FLAGS "--specs=nano.specs")
+set(RISCV_SPEC_NOSYS_LINKER_FLAGS "--specs=nosys.specs")
+
+# Common flags for all targets
+set(COMMON_FLAGS
+    ${CLANG_TARGET_FLAGS}
+    ${CLANG_SYSROOT_FLAGS}
+    ${CLANG_GCC_TOOLCHAIN_FLAGS}
+    -fno-exceptions
+    -ffunction-sections
+    -fdata-sections
+    -fno-common
+    -fno-strict-aliasing
+    -fshort-enums
+)
+
+# Toolchain link libraries
+set(TOOLCHAIN_LIBS
+    -Wl,--start-group
+    m
+    c
+    gcc
+    nosys
+    -Wl,--end-group
+)
+
+# Use -Os instead of -O3 in Release configuration
+string(REPLACE "-O3" "-Os" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+string(REPLACE "-O3" "-Os" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+
+# Add common flags to C/C++ flags
+foreach(lang C CXX ASM)
+    set(CMAKE_${lang}_FLAGS "${CMAKE_${lang}_FLAGS} ${COMMON_FLAGS}")
+endforeach() 

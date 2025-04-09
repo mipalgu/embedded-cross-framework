@@ -38,6 +38,15 @@ set(${board_name}_SDK_INCDIR
     ${${board_name}_SDK_DIR}/src/rp2_common/pico_double/include
 )
 
+# RP2350 startup source
+set(${board_name}_STARTUP_SRC
+    ${${board_name}_SDK_DIR}/src/rp2_common/boot_stage2/boot2_w25q080.S
+    ${${board_name}_SDK_DIR}/src/rp2_common/pico_bootrom/bootrom.c
+    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_irq/irq_handler_chain.S
+    ${${board_name}_SDK_DIR}/src/rp2_common/pico_float/float_v1_rom_shim.S
+    ${${board_name}_SDK_DIR}/src/rp2_common/pico_double/double_v1_rom_shim.S
+)
+
 # Additional RP2350-specific SDK source files
 set(${board_name}_SDK_SRCS
     ${${board_name}_SDK_SRCS}
@@ -48,7 +57,10 @@ set(${board_name}_SDK_SRCS
 )
 
 # Create the SDK library
-add_library(${board_name}_SDK STATIC ${${board_name}_SDK_SRCS})
+add_library(${board_name}_SDK STATIC 
+    ${${board_name}_SDK_SRCS}
+    ${${board_name}_STARTUP_SRC}
+)
 target_compile_options(${board_name}_SDK PRIVATE ${${board_name}_CFLAGS})
 target_compile_definitions(${board_name}_SDK PRIVATE ${${board_name}_DEFINES})
 target_include_directories(${board_name}_SDK

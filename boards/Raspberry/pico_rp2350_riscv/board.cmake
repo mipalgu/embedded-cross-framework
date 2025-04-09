@@ -12,6 +12,8 @@ set(${board_name}_CPUNAME "RISC-V")
 set(${board_name}_CPU_ARCHITECTURE "RISCV")
 set(${board_name}_CPU "RISCV")
 
+set(PICO_BOARD pico2 CACHE STRING "Board type")
+
 # Derive MCU settings from board definitions
 set(MCU_FAMILY "${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}")
 set(MCU_CORE "${${board_name}_CPU}")

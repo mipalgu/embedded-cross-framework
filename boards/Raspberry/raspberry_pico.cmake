@@ -13,6 +13,24 @@ set(${board_name}_VARIANT "0")       # No integrated flash
 set(${board_name}_CPUNAME "ARM Cortex-M0+")
 set(${board_name}_CPU "ARM_CPU_CORTEX_M0PLUS")
 
+set(PICO_BOARD pico CACHE STRING "Board type")
+
+#
+# Raspberry Pi Pico specific settings
+#
+if(WIN32)
+    set(USERHOME $ENV{USERPROFILE})
+else()
+    set(USERHOME $ENV{HOME})
+endif()
+set(sdkVersion 2.1.1)
+set(toolchainVersion 14_2_Rel1)
+set(picotoolVersion 2.1.1)
+#set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
+#if (EXISTS ${picoVscode})
+#    include(${picoVscode})
+#endif()
+
 # Common compiler flags
 set(${board_name}_COMMON_FLAGS -ffunction-sections -fdata-sections -fno-common -fmessage-length=0)
 
@@ -20,6 +38,29 @@ set(${board_name}_COMMON_FLAGS -ffunction-sections -fdata-sections -fno-common -
 set(${board_name}_FIRMWARE "pico-sdk")
 set(${board_name}_FIRMWARE_DIR ${firmware_${${board_name}_FIRMWARE}_DIR})
 set(${board_name}_SDK_DIR ${${board_name}_FIRMWARE_DIR})
+
+if (NOT PICO_SDK_PATH)
+    if (DEFINED ENV{PICO_SDK_PATH})
+        set(PICO_SDK_PATH $ENV{PICO_SDK_PATH})
+        message("Using PICO_SDK_PATH from environment ('${PICO_SDK_PATH}')")
+    else()
+        set(PICO_SDK_PATH ${${board_name}_SDK_DIR})
+        message("Using PICO_SDK_PATH: '${PICO_SDK_PATH}'")
+    endif()
+endif()
+
+if (NOT PICO_TOOLCHAIN_PATH)
+    if (DEFINED ENV{PICO_TOOLCHAIN_PATH})
+        set(PICO_TOOLCHAIN_PATH $ENV{PICO_TOOLCHAIN_PATH})
+        message("Using PICO_SDK_PATH from environment ('${PICO_SDK_PATH}')")
+    else()
+        set(PICO_TOOLCHAIN_PATH ${${board_name}_SDK_DIR})
+        message("Using PICO_SDK_PATH: '${PICO_SDK_PATH}'")
+    endif()
+endif()
+
+# Pull in Raspberry Pi Pico SDK (must be before project)
+include(${${board_name}_SDK_DIR}/external/pico_sdk_import.cmake)
 
 # Common SDK include directories
 set(${board_name}_SDK_INCDIR

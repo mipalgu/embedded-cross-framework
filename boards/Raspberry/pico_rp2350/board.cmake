@@ -13,6 +13,8 @@ set(${board_name}_CPUNAME "ARM Cortex-M33")
 set(${board_name}_CPU_ARCHITECTURE "ARM")
 set(${board_name}_CPU "ARM_CORTEX_M33")
 
+set(PICO_BOARD pico2 CACHE STRING "Board type")
+
 # Derive MCU settings from board definitions
 set(MCU_FAMILY "${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}")
 set(MCU_CORE "${${board_name}_CPU}")

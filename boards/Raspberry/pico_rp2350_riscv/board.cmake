@@ -2,9 +2,18 @@ string(TOUPPER ${board_name} BOARD_NAME_UPPERCASE)
 set(BOARD_VENDOR "Raspberry Pi")
 set(BOARD_DESCRIPTION "Raspberry Pi Pico RP2350 (RISC-V Core)")
 
-# MCU settings
-set(MCU_FAMILY "RP2350")
-set(MCU_CORE "RISCV")
+# Board-specific definitions
+set(${board_name}_CLASS "RP")        # Raspberry Pi
+set(${board_name}_SUBCLASS "2")      # Dual-core
+set(${board_name}_FAMILY "3")        # RISC-V Hazard3 architecture
+set(${board_name}_MODEL "5")         # 520KB SRAM (log2(520/16) = 5)
+set(${board_name}_VARIANT "0")       # No integrated flash
+set(${board_name}_CPUNAME "RISC-V")
+set(${board_name}_CPU "RISCV")
+
+# Derive MCU settings from board definitions
+set(MCU_FAMILY "${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}")
+set(MCU_CORE "${${board_name}_CPU}")
 set(MCU_ARCH "RV32IMC")
 
 # Memory layout
@@ -32,10 +41,14 @@ set(BOARD_LINKER_FLAGS
 )
 
 # Board-specific definitions
-set(BOARD_DEFINITIONS
-    PICO_RP2350=1
-    PICO_RISCV=1
-    __RISCV__=1
+set(${board_name}_DEFINES
+    -D${BOARD_NAME_UPPERCASE}
+    -D${${board_name}_CLASS}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}_${${board_name}_CPU}
 )
 
 # Include directories specific to this board
@@ -63,8 +76,8 @@ set(COMMON_FLAGS
 )
 
 # Add board-specific definitions
-foreach(definition ${BOARD_DEFINITIONS})
-    set(COMMON_FLAGS ${COMMON_FLAGS} -D${definition})
+foreach(definition ${${board_name}_DEFINES})
+    set(COMMON_FLAGS ${COMMON_FLAGS} ${definition})
 endforeach()
 
 # Update C/C++/ASM flags with board-specific settings

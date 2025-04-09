@@ -1,12 +1,27 @@
 # Include common Raspberry Pi Pico definitions
 include(${CMAKE_CURRENT_LIST_DIR}/../pico/raspberry_pico.cmake)
 
+# RP2350-specific board definitions
+set(${board_name}_CLASS "RP")        # Raspberry Pi
+set(${board_name}_SUBCLASS "2")      # Dual-core
+set(${board_name}_FAMILY "3")        # Arm Cortex-M33 architecture
+set(${board_name}_MODEL "5")         # 520KB SRAM (log2(520/16) = 5)
+set(${board_name}_VARIANT "0")       # No integrated flash
+set(${board_name}_CPUNAME "ARM Cortex-M33")
+set(${board_name}_CPU "ARM_CPU_CORTEX_M33")
+
+# Derive MCU settings from board definitions
+set(MCU_FAMILY "${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}")
+set(MCU_CORE "${${board_name}_CPU}")
+
 # RP2350-specific defines
 set(${board_name}_DEFINES 
     -D${BOARD_NAME_UPPERCASE} 
     -D${${board_name}_CLASS} 
     -D${${board_name}_CLASS}${${board_name}_SUBCLASS}
-    -DRP2350
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}
+    -D${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}
     -DPICO_FLOAT_SUPPORT_ROM_V1
 )
 

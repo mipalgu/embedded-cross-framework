@@ -41,8 +41,6 @@ set(${board_name}_SDK_INCDIR
     ${${board_name}_SDK_DIR}/src/rp2_common/hardware_exception/include
     ${${board_name}_SDK_DIR}/src/rp2_common/hardware_interp/include
     ${${board_name}_SDK_DIR}/src/rp2_common/pico_platform/include
-    ${${board_name}_SDK_DIR}/src/rp2040/hardware_regs/include
-    ${${board_name}_SDK_DIR}/src/rp2040/hardware_structs/include
 )
 
 # Common SDK source files

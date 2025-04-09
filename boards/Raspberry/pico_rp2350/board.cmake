@@ -29,9 +29,11 @@ set(${board_name}_LDFLAGS
     ${TOOLCHAIN_LINKER_EXTRA_LDFLAGS}
 )
 
-# Additional RP2350-specific SDK include directories
+# RP2350-specific SDK include directories
 set(${board_name}_SDK_INCDIR
     ${${board_name}_SDK_INCDIR}
+    ${${board_name}_SDK_DIR}/src/rp2350/hardware_regs/include
+    ${${board_name}_SDK_DIR}/src/rp2350/hardware_structs/include
     ${${board_name}_SDK_DIR}/src/rp2_common/pico_float/include
     ${${board_name}_SDK_DIR}/src/rp2_common/pico_double/include
 )

@@ -26,6 +26,13 @@ set(${board_name}_LDFLAGS
     ${TOOLCHAIN_LINKER_EXTRA_LDFLAGS}
 )
 
+# RP2040-specific SDK include directories
+set(${board_name}_SDK_INCDIR
+    ${${board_name}_SDK_INCDIR}
+    ${${board_name}_SDK_DIR}/src/rp2040/hardware_regs/include
+    ${${board_name}_SDK_DIR}/src/rp2040/hardware_structs/include
+)
+
 # Create the SDK library
 add_library(${board_name}_SDK STATIC ${${board_name}_SDK_SRCS})
 target_compile_options(${board_name}_SDK PRIVATE ${${board_name}_CFLAGS})

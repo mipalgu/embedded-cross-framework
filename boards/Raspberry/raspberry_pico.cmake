@@ -13,6 +13,8 @@ set(${board_name}_VARIANT "0")       # No integrated flash
 set(${board_name}_CPUNAME "ARM Cortex-M0+")
 set(${board_name}_CPU "ARM_CPU_CORTEX_M0PLUS")
 
+set(PICO_DEFAULT_GCC_TRIPLE arm-none-eabi)
+
 set(PICO_BOARD pico CACHE STRING "Board type")
 
 #
@@ -30,6 +32,9 @@ set(picotoolVersion 2.1.1)
 #if (EXISTS ${picoVscode})
 #    include(${picoVscode})
 #endif()
+
+# Board-specific include directory
+set(${board_name}_INCDIR ${${board_name}_DIR}/include)
 
 # Common compiler flags
 set(${board_name}_COMMON_FLAGS -ffunction-sections -fdata-sections -fno-common -fmessage-length=0)
@@ -52,73 +57,43 @@ endif()
 if (NOT PICO_TOOLCHAIN_PATH)
     if (DEFINED ENV{PICO_TOOLCHAIN_PATH})
         set(PICO_TOOLCHAIN_PATH $ENV{PICO_TOOLCHAIN_PATH})
-        message("Using PICO_SDK_PATH from environment ('${PICO_SDK_PATH}')")
+        message("Using PICO_TOOLCHAIN_PATH from environment ('${PICO_TOOLCHAIN_PATH}')")
     else()
-        set(PICO_TOOLCHAIN_PATH ${${board_name}_SDK_DIR})
-        message("Using PICO_SDK_PATH: '${PICO_SDK_PATH}'")
+        if (ARM_EABI_TOOLCHAIN_DIR)
+            set(PICO_TOOLCHAIN_PATH ${ARM_EABI_TOOLCHAIN_DIR})
+        elseif(RISCV_TOOLCHAIN_DIR)
+            set(PICO_TOOLCHAIN_PATH ${RISCV_TOOLCHAIN_DIR})
+        endif()
+        message("Using PICO_TOOLCHAIN_PATH: '${PICO_TOOLCHAIN_PATH}'")
     endif()
 endif()
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
-include(${${board_name}_SDK_DIR}/external/pico_sdk_import.cmake)
+set(PICO_SRC_PATH ${PICO_SDK_PATH}/src)
+list(APPEND CMAKE_MODULE_PATH ${PICO_SDK_PATH}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${PICO_SRC_PATH}/cmake)
+include(${PICO_SDK_PATH}/pico_sdk_version.cmake)
+include(pico_utils.cmake)
 
-# Common SDK include directories
-set(${board_name}_SDK_INCDIR
-    ${${board_name}_SDK_DIR}/src/common/pico_base/include
-    ${${board_name}_SDK_DIR}/src/common/pico_stdlib/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_gpio/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_uart/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_i2c/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_spi/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_pwm/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_timer/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_adc/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_dma/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_irq/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_pio/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_pll/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_sync/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_watchdog/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_xosc/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_clocks/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_flash/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_systimer/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_rtc/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_resets/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_claim/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_divider/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_exception/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_interp/include
-    ${${board_name}_SDK_DIR}/src/rp2_common/pico_platform/include
-)
+set(${board_name}_STARTUP_SRC ${PICO_SRC}/rp2_common/pico_crt0/crt0.S)
 
-# Common SDK source files
-set(${board_name}_SDK_SRCS
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_gpio/gpio.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_uart/uart.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_i2c/i2c.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_spi/spi.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_pwm/pwm.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_timer/timer.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_adc/adc.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_dma/dma.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_irq/irq.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_pio/pio.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_pll/pll.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_sync/sync.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_watchdog/watchdog.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_xosc/xosc.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_clocks/clocks.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_flash/flash.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_systimer/systimer.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_rtc/rtc.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_resets/resets.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_claim/claim.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_divider/divider.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_exception/exception.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/hardware_interp/interp.c
-    ${${board_name}_SDK_DIR}/src/rp2_common/pico_platform/platform.c
-)
+function(pico_add_subdirectory subdir)
+    string(TOUPPER ${subdir} subdir_upper)
+    get_filename_component(subdir_upper ${subdir_upper} NAME)
+    set(skip_flag SKIP_${subdir_upper})
+    if (NOT ${skip_flag})
+        if (${ARGC} GREATER 1)
+            list(APPEND PICO_SUBDIRS ${ARGV2}/${subdir})
+        else()
+            list(APPEND PICO_SUBDIRS ${subdir})
+        endif()
+    endif()
+endfunction()
 
-set(${board_name}_INCDIR ${${board_name}_DIR}/include)
-set(${board_name}_INCDIR_HAL_LIB ${${board_name}_DIR}/hal/include)
+function(pico_add_doxygen_pre_define definition)
+    list(APPEND PICO_PRE_DEFINES ${definition})
+endfunction()
+
+function(pico_add_doxygen_enabled_section section)
+    list(APPEND PICO_DOXYGEN_ENABLED_SECTIONS ${section})
+endfunction()

@@ -70,10 +70,11 @@ endif()
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 set(PICO_SRC_PATH ${PICO_SDK_PATH}/src)
-list(APPEND CMAKE_MODULE_PATH ${PICO_SDK_PATH}/cmake)
+set(PICO_CMAKE_PATH ${PICO_SDK_PATH}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${PICO_CMAKE_PATH})
 list(APPEND CMAKE_MODULE_PATH ${PICO_SRC_PATH}/cmake)
 include(${PICO_SDK_PATH}/pico_sdk_version.cmake)
-include(pico_utils.cmake)
+include(${PICO_CMAKE_PATH}/pico_utils.cmake)
 
 set(${board_name}_STARTUP_SRC ${PICO_SRC}/rp2_common/pico_crt0/crt0.S)
 

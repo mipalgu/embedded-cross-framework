@@ -1,7 +1,7 @@
 # Include common Board definitions
 include(${CMAKE_CURRENT_LIST_DIR}/../board_common.cmake)
 # Include active pico platform definitions
-include(pico_pre_load_platform.cmake)
+include(${PICO_CMAKE_PATH}/pico_pre_load_platform.cmake)
 # Get the pico board subdirectories
 if (EXISTS ${PICO_SRC_PATH}/${PICO_CHIP}.cmake)
     include(${PICO_SRC_PATH}/${PICO_CHIP}.cmake)

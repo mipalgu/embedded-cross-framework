@@ -19,13 +19,14 @@ set(${board_name}_CFLAGS
 )
 
 set(${board_name}_LDFLAGS
+    ${TOOLCHAIN_LINKER_PREFIX}-L${${board_name}_DIR}
     ${PICO_COMMON_LANG_FLAGS}
     ${TOOLCHAIN_LINKER_FLAG}
     ${TOOLCHAIN_LINKER_PREFIX}--gc-sections
     ${TOOLCHAIN_LINKER_EXTRA_LDFLAGS}
 )
 
-set(${board_name}_LINKER_SCRIPT ${PICO_SRC_PATH}/${PICO_CHIP}/memmap_default.ld)
+set(${board_name}_LINKER_SCRIPT ${PICO_RP2_COMMON_PATH}/pico_crt0/${PICO_CHIP}/memmap_default.ld)
 
 set(${board_name}_SDK_BOARD_INCDIR ${PICO_SRC_PATH}/boards/include/boards)
 set(PICO_BOARD_INCLUDE ${${board_name}_SDK_BOARD_INCDIR}/${PICO_BOARD}.h)

@@ -3,6 +3,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/../raspberry_pico.cmake)
 
 set(BOARD_DESCRIPTION "Raspberry Pi Pico RP2040 (ARM M0+ Core)")
 
+list(APPEND PICO_PRE_DEFINES "PICO_ON_DEVICE=1")
+
 # RP2040-specific board definitions
 set(${board_name}_CLASS "RP")        # Raspberry Pi
 set(${board_name}_SUBCLASS "2")      # Dual-core
@@ -14,6 +16,7 @@ set(${board_name}_CPU_ARCHITECTURE "ARM")
 set(${board_name}_CPU "ARM_CORTEX_M0PLUS")
 
 set(PICO_CHIP rp2040)
+string(TOUPPER ${PICO_CHIP} PICO_CHIP_UPPERCASE)
 set(PICO_BOARD pico CACHE STRING "Board type")
 set(PICO_CLANG_RUNTIMES armv6m_soft_nofp armv6m-unknown-none-eabi)
 

@@ -3,6 +3,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/../raspberry_pico_2350.cmake)
 
 set(BOARD_DESCRIPTION "Raspberry Pi Pico RP2350 (ARM M33 Core)")
 
+list(APPEND PICO_PRE_DEFINES "PICO_ON_DEVICE=1")
+
 # RP2350 ARM-specific board definitions
 set(${board_name}_CPUNAME "ARM Cortex-M33")
 set(${board_name}_CPU_ARCHITECTURE "ARM")

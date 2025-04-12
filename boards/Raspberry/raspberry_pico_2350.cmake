@@ -10,6 +10,7 @@ set(${board_name}_MODEL "5")         # 520KB SRAM (log2(520/16) = 5)
 set(${board_name}_VARIANT "0")       # No integrated flash
 
 set(PICO_CHIP rp2350)
+string(TOUPPER ${PICO_CHIP} PICO_CHIP_UPPERCASE)
 set(PICO_BOARD pico2 CACHE STRING "Board type")
 set(PICO_CLANG_RUNTIMES armv8m.main_soft_nofp armv8m.main-unknown-none-eabi)
 

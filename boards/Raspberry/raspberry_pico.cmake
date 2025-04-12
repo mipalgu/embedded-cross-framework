@@ -35,6 +35,7 @@ set(picotoolVersion 2.1.1)
 
 # Board-specific include directory
 set(${board_name}_INCDIR ${${board_name}_DIR}/include)
+set(${board_name}_INCDIR_FALLBACK ${${board_name}_DIR}/../include)
 
 # Common compiler flags
 set(${board_name}_COMMON_FLAGS -ffunction-sections -fdata-sections -fno-common -fmessage-length=0)
@@ -69,8 +70,12 @@ if (NOT PICO_TOOLCHAIN_PATH)
 endif()
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
+set(PICO_LIB_PATH ${PICO_SDK_PATH}/lib)
 set(PICO_SRC_PATH ${PICO_SDK_PATH}/src)
 set(PICO_CMAKE_PATH ${PICO_SDK_PATH}/cmake)
+set(PICO_RP2_COMMON_PATH ${PICO_SRC_PATH}/rp2_common)
+set(PICO_CMSIS_PATH ${PICO_RP2_COMMON_PATH}/cmsis)
+set(PICO_CMSIS_STUB_PATH ${PICO_CMSIS_PATH}/stub/CMSIS)
 # Make sure the SDK paths are added to CMAKE_MODULE_PATH
 list(APPEND CMAKE_MODULE_PATH ${PICO_SDK_PATH})
 list(APPEND CMAKE_MODULE_PATH ${PICO_CMAKE_PATH})
@@ -81,10 +86,14 @@ include(${PICO_CMAKE_PATH}/pico_utils.cmake)
 
 set(${board_name}_STARTUP_SRC ${PICO_SRC_PATH}/rp2_common/pico_crt0/crt0.S)
 
+list(APPEND PICO_PRE_DEFINES "__weak=__attribute__((weak))")
+list(APPEND PICO_COMMON_INCDIRS ${PICO_SRC_PATH}/common/pico_base_headers/include)
+
 function(pico_add_subdirectory subdir)
     string(TOUPPER ${subdir} subdir_upper)
     get_filename_component(subdir_upper ${subdir_upper} NAME)
     set(skip_flag SKIP_${subdir_upper})
+message("Appending ${subdir} SKIP_${subdir_upper}=${SKIP_${subdir_upper}}")
     if (NOT ${skip_flag})
         set(PICO_SUBDIRS ${PICO_SUBDIRS})
         if (${ARGC} GREATER 1)
@@ -119,3 +128,13 @@ function(pico_add_doxygen_exclude SOURCE_DIR)
     list(APPEND PICO_DOXYGEN_EXCLUDE_PATHS "${SOURCE_DIR}")
     set(PICO_DOXYGEN_EXCLUDE_PATHS "${PICO_DOXYGEN_EXCLUDE_PATHS}" CACHE INTERNAL "")
 endfunction()
+
+# Modules known not to compile, so skip for now.
+set(SKIP_PICO_ASYNC_CONTEXT 1)
+set(SKIP_PICO_BTSTACK 1)
+set(SKIP_PICO_CYW43_DRIVER 1)
+set(SKIP_PICO_CYW43_ARCH 1)
+set(SKIP_PICO_LWIP 1)
+set(SKIP_PICO_CLIB_INTERFACE 1)
+set(SKIP_PICO_FIX 1)
+set(SKIP_PICO_MBEDTLS 1)

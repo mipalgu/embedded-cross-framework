@@ -33,6 +33,13 @@ if (EXISTS ${PICO_BOARD_INCLUDE})
     set(${board_name}_BOARD_INCLUDE ${PICO_BOARD_INCLUDE})
 endif()
 
+set(${board_name}_SDK_PLATFORM_INCDIRS
+    ${PICO_SRC_PATH}/${PICO_CHIP}/boot_stage2/include
+    ${PICO_SRC_PATH}/${PICO_CHIP}/hardware_regs/include
+    ${PICO_SRC_PATH}/${PICO_CHIP}/hardware_structs/include
+    ${PICO_SRC_PATH}/${PICO_CHIP}/pico_platform/include
+)
+
 message("PICO_SUBDIRS is ${PICO_SUBDIRS}")
 foreach(subdir ${PICO_SUBDIRS})
     set(abs_dir ${PICO_SRC_PATH}/${subdir})
@@ -44,18 +51,34 @@ foreach(subdir ${PICO_SUBDIRS})
     list(APPEND ${board_name}_SDK_COMMON_SRCS ${srcs})
 endforeach()
 
-set(${board_name}_HAL_INCDIRS ${${board_name}_SDK_COMMON_INCDIRS})
+set(${board_name}_HAL_INCDIRS
+    ${${board_name}_SDK_COMMON_INCDIRS}
+    ${PICO_LIB_PATH}/tinyusb/src
+    ${PICO_LIB_PATH}/btstack/src
+    ${PICO_LIB_PATH}/btstack/test/embedded
+    ${PICO_LIB_PATH}/btstack/3rd-party/segger-rtt
+    ${PICO_CMSIS_PATH}/include
+    ${PICO_CMSIS_STUB_PATH}/Device/${PICO_CHIP_UPPERCASE}/Include
+    ${PICO_CMSIS_STUB_PATH}/Core/Include
+    ${PICO_CMSIS_STUB_PATH}/Device/RP2040/Include
+    ${PICO_CMSIS_STUB_PATH}/Device/RP2350/Include
+    ${PICO_CMSIS_PATH}/include/cmsis
+)
 set(${board_name}_HAL_SRCS ${${board_name}_SDK_COMMON_SRCS})
 
 add_library(${board_name}_HAL STATIC ${${board_name}_HAL_SRCS})
 target_compile_options(${board_name}_HAL PRIVATE ${${board_name}_CFLAGS})
 target_compile_definitions(${board_name}_HAL PRIVATE ${${board_name}_DEFINES})
 target_include_directories(${board_name}_HAL
-    PRIVATE ${${board_name}_INCDIR_HAL_LIB}
-    PUBLIC ${${board_name}_INCDIR}
+    PRIVATE
+    ${${board_name}_INCDIR_HAL_LIB}
+    PUBLIC
     ${${board_name}_INCDIR}
-    ${${board_name}_SDK_BOARD_INCDIR}
+    ${PICO_COMMON_INCDIRS}
     ${${board_name}_HAL_INCDIRS}
+    ${${board_name}_SDK_BOARD_INCDIR}
+    ${${board_name}_SDK_PLATFORM_INCDIRS}
+    ${${board_name}_INCDIR_FALLBACK}
 )
 
 set(${board_name}_LIBS

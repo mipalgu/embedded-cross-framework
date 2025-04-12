@@ -4,6 +4,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/../raspberry_pico.cmake)
 set(BOARD_DESCRIPTION "Raspberry Pi Pico RP2040 (ARM M0+ Core)")
 
 list(APPEND PICO_PRE_DEFINES "PICO_ON_DEVICE=1")
+list(APPEND PICO_PRE_DEFINES "__ARM_ARCH_6M__")
 
 # RP2040-specific board definitions
 set(${board_name}_CLASS "RP")        # Raspberry Pi

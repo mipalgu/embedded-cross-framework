@@ -27,8 +27,8 @@ set(${board_name}_LDFLAGS
 
 set(${board_name}_LINKER_SCRIPT ${PICO_SRC_PATH}/${PICO_CHIP}/memmap_default.ld)
 
-set(${board_name}_SDK_BOARD_INCDIR ${PICO_SRC_PATH}/boards/include/boards/${PICO_BOARD}.h})
-set(PICO_BOARD_INCLUDE ${${board_name}_SDK_BOARD_INCDIR}/${PICO_BOARD}.h})
+set(${board_name}_SDK_BOARD_INCDIR ${PICO_SRC_PATH}/boards/include/boards)
+set(PICO_BOARD_INCLUDE ${${board_name}_SDK_BOARD_INCDIR}/${PICO_BOARD}.h)
 if (EXISTS ${PICO_BOARD_INCLUDE})
     set(${board_name}_BOARD_INCLUDE ${PICO_BOARD_INCLUDE})
 endif()

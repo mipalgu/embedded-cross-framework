@@ -22,7 +22,7 @@ set(PICO_COMMON_LANG_FLAGS
     ${ARM_CPU_CORTEX_M0PLUS_FLAGS}
     ${ARM_CPU_CORTEX_THUMB_FLAGS}
     ${ARM_CPU_ABI_SOFT_FLOAT_FLAGS}
-    "-march=armv6m"
+    "-march=armv6-m"
 )
 
 include(${CMAKE_CURRENT_LIST_DIR}/../raspberry_pico_common.cmake)

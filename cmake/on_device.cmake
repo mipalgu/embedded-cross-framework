@@ -1,0 +1,1 @@
+../firmware/Raspberry/pico-sdk/src/cmake/on_device.cmake

@@ -4,7 +4,7 @@
 string(TOUPPER ${board_name} BOARD_NAME_UPPERCASE)
 set(${board_name}_CLASS "STM32")
 set(${board_name}_SUBCLASS "H7")
-set(${board_name}_SUPERFAMILY "B3")
+set(${board_name}_SUPERFAMILY "RS")
 set(${board_name}_FAMILY "S3")
 set(${board_name}_MODEL "L8")
 set(${board_name}_CPUNAME "ARM Cortex-M7")
@@ -39,12 +39,12 @@ set(${board_name}_LDFLAGS
     ${TOOLCHAIN_LINKER_PREFIX}--gc-sections
     ${TOOLCHAIN_LINKER_EXTRA_LDFLAGS}
 )
-set(${board_name}_FIRMWARE "STM32CubeH7")
+set(${board_name}_FIRMWARE "STM32CubeH7RS")
 set(${board_name}_FIRMWARE_DIR
     ${CMAKE_SOURCE_DIR}/firmware/ST/${${board_name}_FIRMWARE}
 )
 set(${board_name}_HAL_DIR
-    ${${board_name}_FIRMWARE_DIR}/Drivers/STM32H7xx_HAL_Driver
+    ${${board_name}_FIRMWARE_DIR}/Drivers/STM32H7RSxx_HAL_Driver
 )
 set(${board_name}_HAL_INCDIR
     ${${board_name}_HAL_DIR}/Inc
@@ -59,10 +59,10 @@ set(${board_name}_CMSIS_INCDIR
     ${${board_name}_CMSIS_DIR}/Include
 )
 set(${board_name}_CMSIS_DEVICE_INCDIR
-    ${${board_name}_CMSIS_DIR}/Device/ST/STM32H7xx/Include
+    ${${board_name}_CMSIS_DIR}/Device/ST/STM32H7RSxx/Include
 )
 set(${board_name}_CMSIS_DEVICE_SRCDIR
-    ${${board_name}_CMSIS_DIR}/Device/ST/STM32H7xx/Source/Templates
+    ${${board_name}_CMSIS_DIR}/Device/ST/STM32H7RSxx/Source/Templates
 )
 set(${board_name}_BOARD_RTOS_DIR
     ${${board_name}_FIRMWARE_DIR}/Middlewares/Third_Party/FreeRTOS/Source
@@ -107,13 +107,12 @@ set(${board_name}_BOARD_RTOS_PORTABLE_CPU_INCDIR
 set(${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_INCDIR
     ${${board_name}_BOARD_RTOS_PORTABLE_MEMMAN_DIR}
 )
-# Use a compatible startup file since the H7S3 specific one isn't available yet
 set(${board_name}_STARTUP_SRC
-    ${${board_name}_CMSIS_DEVICE_SRCDIR}/gcc/startup_stm32h7b3xx.s
+    ${${board_name}_CMSIS_DEVICE_SRCDIR}/gcc/startup_stm32h7s3xx.s
 )
 # Use a compatible linker script
 set(${board_name}_LINKER_SCRIPT
-    ${${board_name}_FIRMWARE_DIR}/Projects/STM32H7B3I-DK/Templates/STM32CubeIDE/STM32H7B3LIHXQ_FLASH.ld
+    ${${board_name}_FIRMWARE_DIR}/Projects/NUCLEO-H7S3L8/Templates/Template/STM32CubeIDE/Boot/STM32H7S3L8HX_FLASH.ld
 )
 set(${board_name}_LIBDIR
     ${TOOLCHAIN_V7EM_NOFP_LIBDIR}
@@ -128,109 +127,118 @@ MESSAGE(STATUS
 
 # The individual HAL source files
 set(${board_name}_HAL_SRCS
-    ${${board_name}_CMSIS_DEVICE_SRCDIR}/system_stm32h7xx.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_adc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_adc_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_cortex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_crc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_crc_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_cryp.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_cryp_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_dac.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_dac_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_dcmi.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_dfsdm.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_dma.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_dma_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_dsi.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_eth.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_eth_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_exti.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_fdcan.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_flash.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_flash_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_gpio.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_hash.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_hash_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_hcd.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_i2c.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_i2c_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_i2s.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_i2s_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_irda.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_iwdg.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_jpeg.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_lptim.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_ltdc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_ltdc_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_mdios.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_mdma.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_mmc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_mmc_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_nand.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_nor.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_opamp.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_opamp_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_ospi.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_pcd.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_pcd_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_pssi.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_pwr.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_pwr_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_qspi.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_ramecc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_rcc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_rcc_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_rng.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_rng_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_rtc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_rtc_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_sai.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_sai_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_sd.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_sd_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_sdram.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_smartcard.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_smartcard_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_smbus.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_spdifrx.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_spi.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_spi_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_sram.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_swpmi.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_tim.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_tim_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_uart.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_uart_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_usart.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_usart_ex.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_hal_wwdg.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_adc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_bdma.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_crc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_dac.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_dma.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_dma2d.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_exti.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_fmc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_gpio.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_i2c.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_lptim.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_lpuart.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_mdma.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_opamp.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_pwr.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_rcc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_rng.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_rtc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_sdmmc.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_spi.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_swpmi.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_tim.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_usart.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_usb.c
-    ${${board_name}_HAL_SRCDIR}/stm32h7xx_ll_utils.c
+    ${${board_name}_CMSIS_DEVICE_SRCDIR}/system_stm32h7rsxx.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_adc_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_adc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_cec.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_cordic.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_cortex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_crc_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_crc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_cryp_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_cryp.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_dcmipp.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_dma_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_dma.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_dma2d.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_dts.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_eth_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_eth.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_exti.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_fdcan.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_flash_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_flash.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_gfxmmu.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_gfxtim.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_gpio.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_gpu2d.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_hash.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_hcd.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_i2c_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_i2c.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_i2s_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_i2s.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_i3c.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_icache.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_irda.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_iwdg.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_jpeg.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_lptim.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_ltdc_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_ltdc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_mce.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_mdf.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_mdios.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_mmc_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_mmc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_msp_template.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_nand.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_nor.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_pcd_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_pcd.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_pka.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_pssi.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_pwr_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_pwr.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_ramecc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_rcc_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_rcc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_rng_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_rng.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_rtc_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_rtc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_sai_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_sai.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_sd_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_sd.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_sdio.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_sdram.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_smartcard_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_smartcard.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_smbus_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_smbus.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_spdifrx.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_spi_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_spi.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_sram.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_tim_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_tim.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_timebase_rtc_wakeup_template.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_timebase_tim_template.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_uart_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_uart.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_usart_ex.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_usart.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_wwdg.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal_xspi.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_hal.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_adc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_cordic.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_crc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_crs.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_dlyb.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_dma.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_dma2d.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_exti.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_fmc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_gpio.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_i2c.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_i3c.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_lptim.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_lpuart.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_pka.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_pwr.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_rcc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_rng.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_rtc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_sdmmc.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_spi.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_tim.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_ucpd.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_usart.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_usb.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_ll_utils.c
+    ${${board_name}_HAL_SRCDIR}/stm32h7rsxx_util_i3c.c
 )
 
 # The individual FreeRTOS source files

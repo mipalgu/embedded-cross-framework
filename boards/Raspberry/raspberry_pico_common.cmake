@@ -1,3 +1,13 @@
+# Set PICO_BARE_METAL if not using RTOS
+if (NOT DEFINED USE_RTOS OR NOT USE_RTOS)
+    set(PICO_BARE_METAL 1)
+endif()
+
+# Turn networking off if PICO_BARE_METAL is set
+if (NOT DEFINED PICO_NO_NETWORKING AND PICO_BARE_METAL)
+    set(PICO_NO_NETWORKING 1)
+endif()
+
 # Include common Board definitions
 include(${CMAKE_CURRENT_LIST_DIR}/../board_common.cmake)
 # Include active pico SDK and platform definitions

@@ -1,2 +1,7 @@
-// Placeholder for Pico2 (RP2350) board HAL header
-// Copy or adapt from pico_rp2350/include/hal.h as needed
+#ifndef RASPBERRY_RP2350_HAL_H_
+#define RASPBERRY_RP2350_HAL_H_
+
+#include "pico2.h"
+#include "cmsis/rename_exceptions.h"
+
+#endif

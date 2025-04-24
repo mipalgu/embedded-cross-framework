@@ -71,10 +71,7 @@ add_library(${board_name}_HAL STATIC ${${board_name}_HAL_SRCS})
 target_compile_options(${board_name}_HAL PRIVATE ${${board_name}_CFLAGS})
 target_compile_definitions(${board_name}_HAL PRIVATE ${${board_name}_DEFINES})
 
-# Link pico_stdlib if not bare metal, otherwise add pico_stdlib_stubs.c with weak linkage
-if (NOT PICO_BARE_METAL)
-    target_link_libraries(${board_name}_HAL PUBLIC pico_stdlib)
-else()
+if (NOT PICO_SKIP_STUBS)
     target_sources(${board_name}_HAL PRIVATE ${CMAKE_CURRENT_LIST_DIR}/pico_stdlib_stubs.c)
 endif()
 

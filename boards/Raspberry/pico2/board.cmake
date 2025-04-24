@@ -1,7 +1,9 @@
-# Include common Raspberry Pi Pico definitions
+# Raspberry Pi Pico2 (RP2350) board configuration
+# Board name must match PICO SDK expectation: pico2
+
 include(${CMAKE_CURRENT_LIST_DIR}/../raspberry_pico_2350.cmake)
 
-set(BOARD_DESCRIPTION "Raspberry Pi Pico RP2350 (ARM M33 Core)")
+set(BOARD_DESCRIPTION "Raspberry Pi Pico2 (RP2350, ARM M33 Core)")
 
 list(APPEND PICO_PRE_DEFINES "PICO_ON_DEVICE=1")
 
@@ -27,6 +29,7 @@ endif()
 # Add RP2350-specifics to ${board_name}_DEFINES
 list(APPEND ${board_name}_DEFINES
     -DPICO_FLOAT_SUPPORT_ROM_V1
+    -DPICO_RP2350=1
 )
 
 include(${CMAKE_CURRENT_LIST_DIR}/../raspberry_pico_common.cmake)

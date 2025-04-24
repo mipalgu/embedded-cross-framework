@@ -67,13 +67,13 @@ set(${board_name}_HAL_INCDIRS
 )
 set(${board_name}_HAL_SRCS ${${board_name}_SDK_COMMON_SRCS})
 
+if (NOT PICO_SKIP_STUBS)
+    list(APPEND ${board_name}_HAL_SRCS ${CMAKE_CURRENT_LIST_DIR}/pico_stdlib_stubs.c)
+endif()
+
 add_library(${board_name}_HAL STATIC ${${board_name}_HAL_SRCS})
 target_compile_options(${board_name}_HAL PRIVATE ${${board_name}_CFLAGS})
 target_compile_definitions(${board_name}_HAL PRIVATE ${${board_name}_DEFINES})
-
-if (NOT PICO_SKIP_STUBS)
-    target_sources(${board_name}_HAL PRIVATE ${CMAKE_CURRENT_LIST_DIR}/pico_stdlib_stubs.c)
-endif()
 
 target_include_directories(${board_name}_HAL
     PRIVATE

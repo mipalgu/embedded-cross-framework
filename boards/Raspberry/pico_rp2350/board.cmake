@@ -21,7 +21,7 @@ set(PICO_COMMON_LANG_FLAGS
     ${ARM_CPU_ABI_SOFTFP_FLOAT_FLAGS}
 )
 if (NOT PICO_NO_CMSE)
-    addlist(PICO_COMMON_LANG_FLAGS "-mcmse")
+    list(APPEND PICO_COMMON_LANG_FLAGS "-mcmse")
 endif()
 
 # Add RP2350-specifics to ${board_name}_DEFINES

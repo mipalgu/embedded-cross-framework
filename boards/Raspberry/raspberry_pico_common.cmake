@@ -9,6 +9,12 @@ else()
     include(${PICO_SRC_PATH}/cmake/rp2_common.cmake)
 endif()
 
+set(${board_name}_SDK_BOARD_INCDIR_REL boards/include)
+set(${board_name}_SDK_BOARD_INCDIR ${PICO_SRC_PATH}/${${board_name}_SDK_BOARD_INCDIR_REL})
+set(PICO_BOARD_INCLUDE_REL ${${board_name}_SDK_BOARD_INCDIR}/${PICO_BOARD}.h)
+set(PICO_BOARD_INCLUDE ${${board_name}_SDK_BOARD_INCDIR}/${PICO_BOARD}.h)
+list(APPEND PICO_PRE_DEFINES "PICO_CONFIG_HEADER=boards/${PICO_BOARD}.h")
+
 foreach(define ${PICO_PRE_DEFINES})
     list(APPEND ${board_name}_DEFINES -D${define})
 endforeach()
@@ -27,12 +33,6 @@ set(${board_name}_LDFLAGS
 )
 
 set(${board_name}_LINKER_SCRIPT ${PICO_RP2_COMMON_PATH}/pico_crt0/${PICO_CHIP}/memmap_default.ld)
-
-set(${board_name}_SDK_BOARD_INCDIR ${PICO_SRC_PATH}/boards/include/boards)
-set(PICO_BOARD_INCLUDE ${${board_name}_SDK_BOARD_INCDIR}/${PICO_BOARD}.h)
-if (EXISTS ${PICO_BOARD_INCLUDE})
-    set(${board_name}_BOARD_INCLUDE ${PICO_BOARD_INCLUDE})
-endif()
 
 set(${board_name}_SDK_PLATFORM_INCDIRS
     ${PICO_SRC_PATH}/${PICO_CHIP}/boot_stage2/include

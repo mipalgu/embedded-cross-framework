@@ -317,6 +317,19 @@ macro(build_subproject_for_board project board subproject executable)
         #     ${${board}_USWIFT_INCDIRS}
         # )
     endif()
+    # Run the ${board,project,subproject}_post_process functions if defined
+    string(CONCAT _post_process_func ${board} "_post_process")
+    if(COMMAND ${_post_process_func})
+        cmake_language(CALL ${_post_process_func} ${project} ${board} ${subproject} ${executable})
+    endif()
+    string(CONCAT _project_post_process_func ${project} "_post_process")
+    if(COMMAND ${_project_post_process_func})
+        cmake_language(CALL ${_project_post_process_func} ${project} ${board} ${subproject} ${executable})
+    endif()
+    string(CONCAT _subproject_post_process_func ${subproject} "_post_process")
+    if(COMMAND ${_subproject_post_process_func})
+        cmake_language(CALL ${_subproject_post_process_func} ${project} ${board} ${subproject} ${executable})
+    endif()
     # Add any toolchain specific libraries
     add_executable(${executable}
         ${${subproject}_STARTUP_SRC}

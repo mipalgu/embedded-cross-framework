@@ -1,12 +1,14 @@
+set(PICO_DEFAULT_PLATFORM "rp2350-riscv")
+
+# RP2350 RISCV-specific board definitions
+set(PICO_DEFAULT_GCC_TRIPLE riscv32-unknown-elf riscv32-corev-elf)
+
 # Include common Raspberry Pi Pico definitions
 include(${CMAKE_CURRENT_LIST_DIR}/../raspberry_pico_2350.cmake)
 
 set(BOARD_DESCRIPTION "Raspberry Pi Pico RP2350 (RISC-V Core)")
 
 list(APPEND PICO_PRE_DEFINES "PICO_ON_DEVICE=1")
-
-# RP2350 RISCV-specific board definitions
-set(PICO_DEFAULT_GCC_TRIPLE riscv32-unknown-elf riscv32-corev-elf)
 
 # Board-specific definitions
 set(${board_name}_CLASS "RP")        # Raspberry Pi

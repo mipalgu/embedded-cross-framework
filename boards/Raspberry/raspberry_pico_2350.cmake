@@ -11,8 +11,14 @@ set(${board_name}_FAMILY "3")        # Arm Cortex-M33 architecture
 set(${board_name}_MODEL "5")         # 520KB SRAM (log2(520/16) = 5)
 set(${board_name}_VARIANT "0")       # No integrated flash
 
-set(PICO_CLANG_RUNTIMES armv8m.main_soft_nofp armv8m.main-unknown-none-eabi)
+if(NOT DEFINED PICO_CLANG_RUNTIMES)
+    set(PICO_CLANG_RUNTIMES armv8m.main_soft_nofp armv8m.main-unknown-none-eabi)
+endif()
 
 # Derive MCU settings from board definitions
-set(MCU_FAMILY "${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}")
-set(MCU_CORE "${${board_name}_CPU}")
+if(NOT DEFINED MCU_FAMILY)
+    set(MCU_FAMILY "${${board_name}_CLASS}${${board_name}_SUBCLASS}${${board_name}_FAMILY}${${board_name}_MODEL}${${board_name}_VARIANT}")
+endif()
+if(NOT DEFINED MCU_CORE)
+    set(MCU_CORE "${${board_name}_CPU}")
+endif()

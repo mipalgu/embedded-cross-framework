@@ -26,7 +26,7 @@ if(NOT DEFINED PICO_DEFAULT_PLATFORM)
 endif()
 
 if(NOT DEFINED PICO_DEFAULT_BOARD)
-    set(PICO_DEFAULT_BOARD "pico" CACHE STRING "Board type")
+    set(PICO_DEFAULT_BOARD "${board_name}" CACHE STRING "Board type")
 endif()
 
 if(NOT DEFINED PICO_PLATFORM)
@@ -48,10 +48,6 @@ endif()
 set(sdkVersion 2.1.1)
 set(toolchainVersion 14_2_Rel1)
 set(picotoolVersion 2.1.1)
-#set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
-#if (EXISTS ${picoVscode})
-#    include(${picoVscode})
-#endif()
 
 # Board-specific include directory
 set(${board_name}_INCDIR ${${board_name}_DIR}/include)
